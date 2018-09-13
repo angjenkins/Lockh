@@ -1,0 +1,50 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/Pricing/v1.0" 
+	xmlns:prc="http://fas.gsa.gov/Pricing/v1.0"
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+
+	<import  namespace="http://fas.gsa.gov/Global/v1.0" 
+				schemaLocation="Global.xsd"/>
+				
+	<complexType name="EDDItem">
+		<sequence>
+			<element name="prefix" type="string" />
+			<element name="manufacturerPartNumber" type="string" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="EDDItemPrice">
+		<sequence>
+			<element name="eddItem" type="prc:EDDItem"/>
+			<element name="sellPrice" type="glb:positivePriceType" nillable="true" />
+			<element name="costPrice" type="glb:positivePriceType" nillable="true" />
+			<element name="minQuantity" type="int"/>
+			<element name="zoneNumber" type="int" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="NIINItem">
+		<sequence>
+			<element name="class" type="int" />
+			<element name="nato" type="string" />
+			<element name="niin7" type="string"  />
+			<element name="suffix" type="string" />
+		</sequence>
+	</complexType>	
+	
+	<complexType name="NIINItemPrice">
+		<sequence>
+			<element name="niinItem" type="prc:NIINItem"/>
+			<element name="store" type="string" />
+			<element name="sellPrice" type="glb:positivePriceType" />
+			<element name="costPrice" type="glb:positivePriceType" />
+			<element name="description" type="string" />
+			<element name="unitOfIssue" type="string" />
+			<element name="unitWeight" type="glb:positiveNumType_3" />
+			<element name="quantityOnHand" type="double" />
+			<element name="standardPack" type="int" />
+			<element name="shelfLife" type="string" />
+			<element name="subNiin" type="string"/>
+		</sequence>
+	</complexType>	
+</schema>

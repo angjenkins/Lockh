@@ -1,0 +1,5 @@
+##service property location
+
+#attachment.property.file = C:/Nate/prod.env.properties
+attachment.property.file = /opt/sw/jboss/enterprise/conf/attachment.properties
+##C:/Users/premanandpeddachetty/workspace/VisionDLA/resources/config/dev.env.properties

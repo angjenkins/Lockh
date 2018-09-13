@@ -1,0 +1,6 @@
+SVN_HOME=/opt/CollabNet_Subversion
+ANT_HOME=/opt/sw/jboss/apache-ant-1.8.0
+ANT_OPTS="-Xms512m -Xmx1024m -XX:MaxPermSize=512m"
+JAVA_HOME=/opt/sw/jboss/java/jdk1.5.0_15
+PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$SVN_HOME/bin:$PATH
+export ANT_HOME ANT_OPTS PATH JAVA_HOME

@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="http://fas.gsa.gov/Global/v1.0" 
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0"  
+	xmlns="http://www.w3.org/2001/XMLSchema">
+
+	<simpleType name="DocStatus">
+		<restriction base="string">
+			<enumeration value="Created"/>
+			<enumeration value="Submited"/>
+			<enumeration value="Withdrawn"/>
+			<enumeration value="Rejected"/>
+		</restriction>
+	</simpleType>
+		
+	<simpleType name="ValueType">
+		<restriction base="string">
+			<enumeration value="string"/>
+			<enumeration value="integer"/>
+			<enumeration value="long"/>
+			<enumeration value="boolean"/>
+			<enumeration value="float"/>
+			<enumeration value="double"/>
+			<enumeration value="date"/>
+			<enumeration value="uri"/>
+			<enumeration value="nonNegativeInteger"/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="State">
+		<restriction base="string">
+			<enumeration value="AK"/>
+			<enumeration value="AL"/>
+			<enumeration value="AR"/>
+			<enumeration value="AZ"/>
+			<enumeration value="CA"/>
+			<enumeration value="CO"/>
+			<enumeration value="CT"/>
+			<enumeration value="DC"/>
+			<enumeration value="DE"/>
+			<enumeration value="FL"/>
+			<enumeration value="GA"/>
+			<enumeration value="HI"/>
+			<enumeration value="IA"/>
+			<enumeration value="ID"/>
+			<enumeration value="IL"/>
+			<enumeration value="IN"/>
+			<enumeration value="KS"/>
+			<enumeration value="KY"/>
+			<enumeration value="LA"/>
+			<enumeration value="MA"/>
+			<enumeration value="MD"/>
+			<enumeration value="ME"/>
+			<enumeration value="MI"/>
+			<enumeration value="MN"/>
+			<enumeration value="MO"/>
+			<enumeration value="MS"/>
+			<enumeration value="MT"/>
+			<enumeration value="NC"/>
+			<enumeration value="ND"/>
+			<enumeration value="NE"/>
+			<enumeration value="NH"/>
+			<enumeration value="NJ"/>
+			<enumeration value="NM"/>
+			<enumeration value="NV"/>
+			<enumeration value="NY"/>
+			<enumeration value="OH"/>
+			<enumeration value="OK"/>
+			<enumeration value="OR"/>
+			<enumeration value="PA"/>
+			<enumeration value="PR"/>
+			<enumeration value="RI"/>
+			<enumeration value="SC"/>
+			<enumeration value="SD"/>
+			<enumeration value="TN"/>
+			<enumeration value="TX"/>
+			<enumeration value="UT"/>
+			<enumeration value="VA"/>
+			<enumeration value="VI"/>
+			<enumeration value="VT"/>
+			<enumeration value="WA"/>
+			<enumeration value="WI"/>
+			<enumeration value="WV"/>
+			<enumeration value="WY"/>
+			<enumeration value="ALL"/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="PhoneNumberType">
+		<restriction base="string">
+			<enumeration value="Domestic"/>
+			<enumeration value="International"/>
+		</restriction>
+	</simpleType>	
+	
+	<simpleType name="empty">
+		<restriction base="string">
+			<enumeration value="" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="Boolean">
+		<restriction base="string">
+			<enumeration value="Y"/>
+			<enumeration value="N"/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="BooleanType">
+		<restriction base="string">
+			<enumeration value="Y"/>
+			<enumeration value="N"/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="Domain">
+		<restriction base="string">
+			<enumeration value="Solicitation"/>
+			<enumeration value="Offer"/>
+			<enumeration value="Pricing"/>
+			<enumeration value="Contract"/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="Operator">
+		<restriction base="string">
+			<enumeration value="Add"/>
+			<enumeration value="Substract"/>
+			<enumeration value="Multiply"/>
+			<enumeration value="Divide"/>
+		</restriction>
+	</simpleType>
+	
+		
+	<simpleType name="DocType">
+		<restriction base="string">
+			<enumeration value="Solicitation"/>
+			<enumeration value="Offer"/>
+			<enumeration value="Contract"/>
+			<enumeration value="Mod"/>
+		</restriction>
+	</simpleType>
+
+
+	<simpleType name="percentage">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="decimal">
+					<minInclusive value="0" />
+					<maxInclusive value="99.9999"/>
+					<fractionDigits value="4" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="positiveInt">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="int" >
+					<minInclusive value="0" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="positiveInt3">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="int" >
+					<minInclusive value="0" />
+					<maxInclusive value="999" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="positiveInt8">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="int" >
+					<minInclusive value="0" />
+					<maxInclusive value="99999999" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="positiveIntRequired3">
+		<restriction base="int" >
+			<minInclusive value="0" />
+			<maxInclusive value="999" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="positiveIntRequired10">
+		<restriction base="long" >
+			<minInclusive value="1" />
+			<maxInclusive value="9999999999" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="positiveLong">
+		<restriction base="long" >
+			<minInclusive value="0" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="priceType">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="decimal">
+					<fractionDigits value="4" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="positivePriceType">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="decimal">
+					<fractionDigits value="2" />
+					<minInclusive value="0" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="string255">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="255" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="string500">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="500" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="string4k">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="4000" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="positiveDouble">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="double">
+					<minInclusive value="0" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="emailType">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<pattern value="[^@]+@[^\.]+\..+"/>
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="dateType">
+		<union memberTypes="glb:empty glb:dateTypeAlt1 glb:dateTypeAlt2">
+			<simpleType>
+				<restriction base="string" >
+					<!-- Valid date Patterns 05/03/2010, 5/3/2010, 5/03/2010 -->
+					<pattern value="([1-9]|0[1-9]|1[012])/([1-9]|0[1-9]|[12][0-9]|3[01])/(19|20)\d\d" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="dateTypeAlt1">
+		<restriction base="string">
+			<!-- 2011-10-01T00:00:00-04:00 -->
+			<pattern value="(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])T\d\d:\d\d:\d\d-\d\d:\d\d" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="dateTypeAlt2">
+		<restriction base="string">
+			<!-- 2011-10-01-04:00 -->
+			<pattern value="(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])-\d\d:\d\d" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="dateTypeEnum">
+		<restriction base="string">
+			<enumeration value="Price" />
+			<enumeration value="Percentage" />
+			<enumeration value="Text" />
+			<enumeration value="PositiveInt" />
+			<enumeration value="Date" />
+			<enumeration value="Boolean" />
+		</restriction>
+	</simpleType>
+	
+	<complexType name="ContractIdentifier">
+		<sequence>
+			<element name="contractNumber" type="string" />
+		</sequence>
+	</complexType>
+	
+	
+	<complexType name="ContractLineIdentifier">
+		<sequence>
+			<element name="contractLineNumber" type="string" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="ProductIdentifier">
+		<sequence>
+			<element name="manufacturerPartNumber" type="string" />
+			<element name="manufacturerName" type="string" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="ServiceIdentifier">
+		<sequence>
+			<element name="serviceType" type="glb:serviceType" />
+			<element name="serviceName" type="string" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="CategoryIdentifier">
+		<sequence>
+			<element name="contractLineNumber" type="string" />
+			<element name="category" type="string" />
+		</sequence>
+	</complexType>
+	
+	<simpleType name="serviceType">
+		<restriction base="string">
+			<enumeration value="Professional" />
+			<enumeration value="Fixed Fee" />
+			<enumeration value="Miscellaneous" />
+		</restriction>
+	</simpleType>
+		
+	<complexType name="RegulationIdentifier">
+		<sequence>
+			<element name="regulationNumber" type="string" />
+			<element name="regulationType" type="string" />
+			<element name="regulationSequenceNumber" type="string" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="Document">
+		<sequence>
+			<element name="fileName" type="string" />
+			<element name="tab" type="string" />
+			<element name="subtab" type="string" />
+			<element name="categoryName" type="string" />
+			<element name="categoryVersion" type="string" />
+			<element name="categoryType" type="glb:DocType" />
+			<element name="id" type="string" />
+			<element name="submitDate" type="date" />
+			<element name="lastUpdate" type="date" />
+			<element name="mimeType" type="string" />
+			<element name="fileDesc" type="string" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="Comment" abstract="true">
+		<sequence>
+			<element name="commentText" type="string" />
+			<element name="author" type="string" />
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+	
+	<simpleType name="stringRequired255">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<maxLength value="255" />					 
+            <minLength value='1'/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="positiveDoubleRequired">
+		<restriction base="double">
+			<whiteSpace value='collapse'/> 
+			<minInclusive value="0" />
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="BooleanRequired">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<enumeration value="Y"/>
+			<enumeration value="N"/>
+			<minLength value='1'/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="percentageRequired">
+	 	<restriction base="decimal">
+			<fractionDigits value="4"/>
+			<minInclusive value="0" />
+			<maxInclusive value="99.9999"/>
+	    </restriction>		
+	</simpleType>
+			
+	<simpleType name="positiveIntRequired">
+			<restriction base="int" >
+				<minInclusive value="0" />
+			</restriction>
+	</simpleType>
+	
+	<simpleType name="positiveNumTypeRequired">
+				<restriction base="decimal">
+					<fractionDigits value="4" />
+				</restriction>
+	</simpleType>
+	
+	<simpleType name="positiveNumType">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="decimal">
+					<fractionDigits value="4" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="positiveNumType_3">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="decimal">
+					<fractionDigits value="3" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>	
+  
+	<simpleType name="stringRequired40">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<maxLength value="40" />					 
+            <minLength value='1'/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="string40">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="40" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="stringRequired1000">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<maxLength value="1000" />					 
+            <minLength value='1'/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="stringRequired500">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<maxLength value="500" />					 
+            <minLength value='1'/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="string20">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="20" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="string10">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="10" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="string80">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="80" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>	
+		
+	<simpleType name="string100">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="100" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="stringRequired2">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<maxLength value="2" />					 
+            <minLength value='1'/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="stringRequired20">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<maxLength value="20" />					 
+            <minLength value='1'/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="stringRequired120">
+		<restriction base="string">
+			<whiteSpace value='collapse'/> 
+			<maxLength value="120" />					 
+            <minLength value='1'/>
+		</restriction>
+	</simpleType>	
+	
+	<simpleType name="positiveNumRequired">
+				<restriction base="decimal">
+					<fractionDigits value="1" />
+				</restriction>
+	</simpleType>
+	
+	<simpleType name="dateTypeRequired">
+		<union memberTypes="glb:dateTypeAlt1 glb:dateTypeAlt2">	
+		<simpleType>	
+				<restriction base="string" >
+					<!-- Valid date Patterns 05/03/2010, 5/3/2010, 5/03/2010 -->
+					<pattern value="([1-9]|0[1-9]|1[012])/([1-9]|0[1-9]|[12][0-9]|3[01])/(19|20)\d\d" />
+				</restriction>
+		</simpleType>		
+		</union>		
+	</simpleType>
+	
+	<simpleType name="positiveNumType2_1">
+	    <restriction base="decimal">
+			<fractionDigits value="1"/>
+			<minInclusive value="0" />
+			<maxInclusive value="99.9" />
+	    </restriction>
+	</simpleType>
+
+	<simpleType name="decimalType15_2">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="decimal">
+					<minInclusive value="0" />
+					<pattern value="[0]*[0-9]{1,11}(\.[0-9]{1,2}[0]*)?" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>		
+
+	<simpleType name="string50">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="50" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string35">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="35" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string30">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="30" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	
+	<simpleType name="string25">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="25" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>	
+	<simpleType name="string15">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="15" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string17">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="17" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string14">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="14" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string11">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="11" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string8">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="8" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string6">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="6" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string7">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="7" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string5">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="5" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string4">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="4" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string3">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="3" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string2">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="2" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<simpleType name="string1">
+		<union memberTypes="glb:empty">
+			<simpleType>
+				<restriction base="string">
+					<maxLength value="1" />
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+
+
+</schema>

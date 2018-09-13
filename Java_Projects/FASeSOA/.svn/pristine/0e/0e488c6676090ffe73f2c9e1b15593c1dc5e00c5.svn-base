@@ -1,0 +1,101 @@
+<wsdl:definitions name="OrderDiscrepanyTransaction"
+	targetNamespace="http://fas.gsa.gov/services/OrderDiscrepancy/v1.0"
+	xmlns:tns="http://fas.gsa.gov/services/OrderDiscrepancy/v1.0"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"  
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:discr="http://fas.gsa.gov/OrderDiscrepancy/v1.0"
+  xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0"
+	xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+  
+  	<!--  WSDL Types declarations -->	
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://fas.gsa.gov/services/OrderDiscrepancy/v1.0"
+    						xmlns:tns="http://fas.gsa.gov/services/OrderDiscrepancy/v1.0"
+    						xmlns:discr="http://fas.gsa.gov/OrderDiscrepancy/v1.0"
+    						xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0"
+    						xmlns:flt="http://fas.gsa.gov/Faults/v1.0"  
+    						xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<xsd:import namespace="http://fas.gsa.gov/OrderDiscrepancy/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/services/Messages/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/Faults/v1.0" />
+
+    	<xsd:element name="discrepancyTransactions" type="msg:DiscrepancyTransactions"/>
+    	<xsd:element name="transactionsResponse" type="msg:TransactionsResponse"/>
+    	<xsd:element name="requestZkpReq"> 
+         <xsd:complexType > 
+              <xsd:sequence/> 
+         </xsd:complexType> 
+     </xsd:element> 
+    	<xsd:element name="resetZkpResp" type="xsd:boolean"/>
+    	    	<!--  Service fault element -->
+			<xsd:element name="serviceFault"	nillable="true" type="flt:ServiceFault" />
+		</xsd:schema>			
+  </wsdl:types>
+  
+  <!-- WSDL Message declarations -->
+  <wsdl:message name="CreateTransactionsRequest">
+    <wsdl:part element="tns:discrepancyTransactions" name="discrepancyTransactions"/>
+  </wsdl:message>
+  <wsdl:message name="CreateTransactionsResponse">
+    <wsdl:part element="tns:transactionsResponse" name="transactionsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="resetZkpRequest">
+    <wsdl:part element="tns:requestZkpReq" name="resetReq"/>
+  </wsdl:message>   
+  <wsdl:message name="resetZkpResponse">
+    <wsdl:part element="tns:resetZkpResp" name="resetResponse"/>
+  </wsdl:message>  
+	<wsdl:message name="ServiceFault">
+  	<wsdl:part element="tns:serviceFault" name="serviceFault" />
+  </wsdl:message>   
+  
+   <!--  WSDL Port Operations --> 
+  <wsdl:portType name="OrderDiscrepancyTransaction">
+    <wsdl:operation name="createDiscrepancyTransactions">
+      <wsdl:input message="tns:CreateTransactionsRequest"/>
+      <wsdl:output message="tns:CreateTransactionsResponse"/>
+      <wsdl:fault message="tns:ServiceFault"  name="createTransactionsFault" />   
+    </wsdl:operation>
+    <wsdl:operation name="resetZKP">
+      <wsdl:input message="tns:resetZkpRequest"/>
+      <wsdl:output message="tns:resetZkpResponse"/>
+      <wsdl:fault message="tns:ServiceFault"  name="resetZkpFault" />   
+    </wsdl:operation>    
+  </wsdl:portType>
+  
+  <!--  WSDL Binding -->
+  <wsdl:binding name="OrderDiscrepancyTransactionBinding" type="tns:OrderDiscrepancyTransaction">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="createDiscrepancyTransactions">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="createTransactionsFault">
+  			<soap:fault use="literal" name="createTransactionsFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>
+    <wsdl:operation name="resetZKP">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="resetZkpFault">
+  			<soap:fault use="literal" name="resetZkpFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>    
+  </wsdl:binding>
+  
+  <!--  WSDL Service -->
+  <wsdl:service name="OrderDiscrepancyTransaction">
+    <wsdl:port binding="tns:OrderDiscrepancyTransactionBinding" name="OrderDiscrepancyTransactionBinding">
+      <soap:address location="http://localhost:8080/order.serivces/OrderDiscrepancyTransaction"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>  

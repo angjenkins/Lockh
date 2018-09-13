@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project basedir="." default="build" name="visiondla">
+
+	<property file="build.local.properties" />
+	<!--  Build directories -->
+	<property name="build.dir" value="build" />
+	<property name="build.classes.dir" value="${build.dir}/classes" />
+	<property name="build.dist.dir" value="${build.dir}/dist"/>	
+	<property name="build.webcontent.dir" value="${build.dir}/webcontent"/>
+
+	<!--  Project directories -->
+	<property name="src.dir" value="${basedir}/src/main/java" />
+	<property name="src.generated.dir" value="${basedir}/src/generated/java" />
+	<property name="resource.dir" value="${basedir}/resources" />
+	<property name="properties.file" value="${resource.dir}/config/visiondla.properties.tmpl" />
+	<property name="datasource.file" value="${resource.dir}/datasource/visiondla-ds.xml.tmpl" />
+	
+	<property name="lib.dir" value="${basedir}/lib" />
+
+	<property name="enterprise.lib.dir" value="${basedir}/../FASeSOA/lib" />
+	<property name="enterprise.schemas.dir"	value="${basedir}/../FASeSOA/Domain.Models/schema"/>		
+
+	<property name="test.src.dir" value="${basedir}/src/test/java" />
+	<property name="test.resource.dir" value="${basedir}/src/test/resources" />
+
+	<property name="environment.properties" value="${resource.dir}/environment/${environment}.env.properties"/>
+	
+	<!-- Class path -->
+	<path id="classpath">
+		<fileset dir="lib" includes="*.jar" />
+		<pathelement path="${build.classes.dir}" />
+	</path>
+	
+	<!-- JAXB-XJC task definition -->
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+  	<classpath>
+    	<fileset dir="${lib.dir}" includes="*.jar" />
+  	</classpath>
+	</taskdef>
+	
+	<taskdef name="wsconsume" classname="org.jboss.wsf.spi.tools.ant.WSConsumeTask">
+		<classpath refid="classpath" />
+	</taskdef>	
+
+	<target name="wsdl2java" >
+		<wsconsume catalog="catalog.xml" verbose="true" sourcedestdir="${src.generated.dir}/" keep="true" 
+					   destdir="${build.classes.dir}" wsdl="${basedir}/${wsdl.file}" extension="true" >
+		</wsconsume>
+	</target>
+	
+	<target name="wsdl2java_sf" >
+		<wsconsume verbose="true" sourcedestdir="${src.generated.dir}/" keep="true" package="${generated.package}"
+					   binding="${basedir}/resources/wsdl/salesforce/sf_binding.xjb" destdir="${build.classes.dir}" wsdl="${basedir}/${wsdl.file}" extension="true" >
+		</wsconsume>
+	</target>			
+
+	<target name="copy.lib" >
+		<copy todir="${lib.dir}">
+			<fileset dir="${enterprise.lib.dir}/apache" includes="*.jar" />
+			<fileset dir="${enterprise.lib.dir}/javaee" includes="*.jar" />
+			<fileset dir="${enterprise.lib.dir}/jbossws/jbossws-3.1.2" includes="*.jar" />
+	   </copy>			
+	</target>
+	
+	<target name="copy.schema" >
+		<copy todir="${resource.dir}/schema">
+			<fileset dir="${enterprise.schemas.dir}" includes="**/*.xsd" />
+	   </copy>			
+	</target>		
+	
+	<target name="init" depends="copy.schema">
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${build.webcontent.dir}"/>
+		<mkdir dir="${build.webcontent.dir}/WEB-INF/classes"/>
+		<mkdir dir="${build.webcontent.dir}/WEB-INF/lib"/>
+		<mkdir dir="${build.webcontent.dir}/WEB-INF/classes/wsdl/salesforce"/>
+		<!--<mkdir dir="${build.webcontent.dir}/WEB-INF/classes/schema"/>-->
+ 	 	<copy todir="${build.webcontent.dir}/WEB-INF">
+			<fileset dir="${resource.dir}/web">
+				<include name="web.xml" />
+			</fileset> 	 		
+		</copy>
+ 	 	<copy todir="${build.webcontent.dir}/WEB-INF/classes">
+			<fileset dir="${resource.dir}/quartz">
+				<include name="quartz-jobs.xml" />
+				<include name="quartz.properties" />
+			</fileset>
+			<fileset dir="${resource.dir}/config">
+				<include name="app.properties" />
+			</fileset>
+		</copy>	
+ 	 	<copy todir="${build.webcontent.dir}/WEB-INF/classes/wsdl/salesforce">
+			<fileset dir="${resource.dir}/wsdl/salesforce" >
+				<include name="NCSC-Partner.wsdl" />
+				<include name="NCSC-DLAService.wsdl" />
+			</fileset>	   	 		
+		</copy>
+	</target>
+	
+	<target name="generate.service" depends="init">
+		<antcall target="wsdl2java">			  	
+			<param name="wsdl.file" value="resources/wsdl/OrderDiscrepancyOutcome.wsdl"/>
+		</antcall>
+	</target>
+	
+	<!-- Generating Salesforce client stubs -->
+  <target name="generate-client">
+    <echo level="info" message="Generating code for Salesforce login using wsdl2java..."/>
+  	<antcall target="wsdl2java_sf">
+  		<param name="wsdl.file" value="resources/wsdl/salesforce/NCSC-Partner.wsdl"/>
+  		<param name="generated.package" value="gov.gsa.fas.vision.dla.sf.login"/>
+  	</antcall>
+    <echo level="info" message="Generating code for Salesforce DLA Request using wsdl2java..."/>
+  	<antcall target="wsdl2java_sf">
+  		<param name="wsdl.file" value="resources/wsdl/salesforce/NCSC-DLAService.wsdl"/>
+  		<param name="generated.package" value="gov.gsa.fas.vision.dla.sf.caserequest"/>
+  	</antcall>  	
+	</target>	
+	
+	<!-- Generating JAXB beans for request schema -->
+	<target name="generate-request">
+		<echo message="Gererating Request objects using JAXB xjc task"/>
+		<mkdir dir="${src.generated.dir}/gov/gsa/fas/vision/dla/request/beans" />
+		<xjc destdir="${src.generated.dir}" package="gov.gsa.fas.vision.dla.request.beans">
+			<!--<schema dir="${resource.dir}/XSD" includes="004030F842A3WA38_Aug2514_ADC_1043A.xsd"/>-->
+			<schema dir="${resource.dir}/XSD" includes="004030F842A3WA36_Oct0913_ADC_1068.xsd"/>
+			<binding dir="${resource.dir}/jaxb" includes="*.xjb"/>
+			<arg line="-nv -verbose"/>
+		</xjc>
+	</target>
+	
+	<!-- Generating JAXB beans for response schema -->
+	<target name="generate-response">
+		<echo message="Gererating Response objects using JAXB xjc task"/>
+		<mkdir dir="${src.generated.dir}/gov/gsa/fas/vision/dla/response/beans" />
+		<xjc destdir="${src.generated.dir}" package="gov.gsa.fas.vision.dla.response.beans">
+			<schema dir="${resource.dir}/XSD" includes="004030F842A3RA26_Oct0913_ADC_1068.xsd"/>
+			<binding dir="${resource.dir}/jaxb" includes="*.xjb"/>
+			<arg line="-nv -verbose"/>
+		</xjc>
+	</target>
+	
+	<target name="generate-all">
+		<antcall target="generate.service"/>
+		<antcall target="generate-client"/>
+		<antcall target="generate-request"/>
+		<antcall target="generate-response"/>
+	</target>
+	
+	<target name="compile" depends="compile-generated">
+		<javac destdir="${build.classes.dir}" debug="on" srcdir="${src.dir}"
+						includes="**/*">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<target name="compile-generated">
+		<delete dir="${build.classes.dir}" includeEmptyDirs="true">
+			<include name="**/*" />
+		</delete>
+		<javac destdir="${build.classes.dir}" debug="on" srcdir="${src.generated.dir}"
+									includes="**/*">
+			<classpath refid="classpath" />
+		</javac>		
+	</target>
+	
+	<target name="package-shared">
+		<jar jarfile="${build.dir}/visiondla.jar">
+			<fileset dir="${build.classes.dir}" >
+				<include name="**/beans/*" />
+				<include name="**/common/*" />
+				<include name="**/config/*" />
+				<include name="**/mf/*" />
+				<include name="**/request/*" />
+				<include name="**/request/model/*" />
+				<include name="**/response/*" />
+				<include name="**/sftp/*" />
+				<include name="**/mail/*" />
+			</fileset>
+			<fileset dir="resources">
+				<include name="wsdl/*"/>
+			</fileset>
+			<fileset dir="${resource.dir}/config">
+				<include name="app.properties"/>
+			</fileset>
+			<fileset dir="${resource.dir}/XSD">
+				<include name="004030F842A3WA38_Aug2514_ADC_1043A.xsd"/>
+				<include name="004030F842A3RA26_Oct0913_ADC_1068.xsd"/>
+			</fileset>				
+		</jar>
+	</target>	
+	
+	<target name="package-ejb">
+		<jar jarfile="${build.dir}/visiondla-ejb.jar">
+			<fileset dir="${build.classes.dir}" >
+				<include name="**/persistence/*" />
+				<include name="**/v1/*" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="package-job">
+		<jar jarfile="${build.webcontent.dir}/WEB-INF/lib/visiondla-job.jar">
+			<fileset dir="${build.classes.dir}" >
+				<include name="**/job/*" />
+				<include name="**/sf/**" />
+				<include name="**/persistence/VisionDlaPersistence.class, **/persistence/VisionDlaPersistenceException.class" />
+			</fileset>
+		</jar>
+	</target>	
+			
+	<target name="package" depends="package-shared, package-job, package-ejb">
+		<war destfile="${build.dir}/visiondla.war">
+			<fileset dir="${build.webcontent.dir}"/>
+		</war>		
+		<ear destfile="${build.dir}/${ant.project.name}.ear" appxml="resources/ear/application.xml">
+      <fileset file="${build.dir}/*-ejb.jar" />
+      <fileset file="${build.dir}/*.war" />
+			<zipfileset dir="${build.dir}" includes="visiondla.jar" prefix="lib" />
+		</ear>		
+	</target>
+	<!-- Prem changes to deploy war file -->
+	<target name="deploy1"  description="Deploy the persistence to the JBOSS_HOME server">
+	    <copy file="${build.dir}/${ant.project.name}.ear" todir="C:\Myong\jboss-eap-5.2\jboss-as\server\default\deploy"/>
+	 <echo level="warning" message="==  It is recommended to restart JBoss if the libraries are changed  =="/>
+	 </target>
+	
+	<target name="build" depends="init,generate-all,compile,package,deploy1" />
+	
+	<target name="clean">	
+		<delete dir="${build.dir}" includeEmptyDirs="true" includes="**/*" />
+		<delete dir="${resource.dir}/schema" includeEmptyDirs="true" includes="**/*" />
+		<delete dir="${src.generated.dir}" includeEmptyDirs="true" includes="**/*" />
+	</target>
+	
+	<target name="deploy" description="deploys ear file to jboss or staging folder">
+ 	 	<copy todir="${jboss.app.deployment.home}/deploy">
+			<fileset dir="${build.dir}">
+				<include name="${ant.project.name}*.ear" />
+			</fileset>
+		</copy>
+ </target>
+	
+	<target name="copy.quartz">
+ 	 	<copy todir="${build.webcontent.dir}/WEB-INF/classes">
+			<fileset dir="${resource.dir}/quartz">
+				<include name="quartz-jobs.xml" />
+				<include name="quartz.properties" />
+			</fileset>
+		</copy>	
+	</target>
+	
+	<target name="configure.env.properties">
+		<copy tofile="${resource.dir}/config/visiondla.properties" file="${properties.file}" overwrite="true" failonerror="false">
+			<filterset begintoken="$${" endToken="}" filtersfile="${environment.properties}" />
+		</copy>
+	</target>	
+	
+	<target name="configure.datasource">
+		<copy tofile="${resource.dir}/datasource/visiondla-ds.xml" file="${datasource.file}" overwrite="true" failonerror="false">
+			<filterset begintoken="$${" endToken="}" filtersfile="${environment.properties}" />
+		</copy>
+	</target>
+	
+	<target name="deploy.datasource" description="deploys datasource file to jboss or staging folder">
+ 	 	<copy todir="${jboss.app.deployment.home}/deploy">
+			<fileset dir="${resource.dir}/datasource">
+				<include name="visiondla-ds.xml" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="deploy.properties" description="deploys properties file">
+ 	 	<copy todir="/opt/sw/jboss/enterprise/conf">
+			<fileset dir="${resource.dir}/config">
+				<include name="visiondla.properties"/>
+			</fileset>
+		</copy>
+	</target>	
+</project>

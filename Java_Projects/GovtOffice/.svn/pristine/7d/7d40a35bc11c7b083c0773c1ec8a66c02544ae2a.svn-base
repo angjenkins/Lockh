@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+encoding//src/com/fpds/service/AddressType.java=UTF-8
+encoding//src/com/fpds/service/AuditInformationType.java=UTF-8
+encoding//src/com/fpds/service/ErrorType.java=UTF-8
+encoding//src/com/fpds/service/GetGovernmentOfficeResponseType.java=UTF-8
+encoding//src/com/fpds/service/GovernmentOfficeFunctionalDimensionalValueType.java=UTF-8
+encoding//src/com/fpds/service/GovernmentOfficeKeyType.java=UTF-8
+encoding//src/com/fpds/service/GovernmentOfficeType.java=UTF-8
+encoding//src/com/fpds/service/InfoType.java=UTF-8
+encoding//src/com/fpds/service/OutputMessagesType.java=UTF-8
+encoding//src/com/fpds/service/ParameterType.java=UTF-8
+encoding//src/com/fpds/service/UserAuthenticationKeyType.java=UTF-8
+encoding//src/com/fpds/service/WarningType.java=UTF-8

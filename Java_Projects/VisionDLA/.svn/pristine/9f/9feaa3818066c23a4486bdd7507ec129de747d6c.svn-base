@@ -1,0 +1,480 @@
+/*
+ * @(#)RequestXmlDataProcessor.java			Aug 19, 2013	
+ *
+ * Copyright 2013 GSA FAS. All rights reserved.
+ * GSA PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+package gov.gsa.fas.vision.dla.request;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.apache.log4j.Logger;
+
+import gov.gsa.fas.vision.dla.common.VisionDlaException;
+import gov.gsa.fas.vision.dla.config.ConfigConstants;
+import gov.gsa.fas.vision.dla.config.VisionDlaConfig;
+import gov.gsa.fas.vision.dla.request.beans.F_File_842AW;
+import gov.gsa.fas.vision.dla.request.beans.S_BNR;
+import gov.gsa.fas.vision.dla.request.beans.S_ST;
+import gov.gsa.fas.vision.dla.request.beans.T_842;
+import gov.gsa.fas.vision.dla.request.model.AdministrativeContact;
+import gov.gsa.fas.vision.dla.request.model.IndustryCode;
+import gov.gsa.fas.vision.dla.request.model.InstructionNote;
+import gov.gsa.fas.vision.dla.request.model.ItemIdentification;
+import gov.gsa.fas.vision.dla.request.model.MonetaryAmount;
+import gov.gsa.fas.vision.dla.request.model.OrganizationInfo;
+import gov.gsa.fas.vision.dla.request.model.Quantity;
+import gov.gsa.fas.vision.dla.request.model.ReferenceIdentification;
+
+/**
+ * <code>RequestXmlDataProcessor</code>
+ *
+ * @author  PrasadRNerayanuru
+ * @see     
+ */
+public class RequestXmlDataProcessor {
+	private static Logger logger = Logger.getLogger(RequestXmlDataProcessor.class);
+	private static String REQUEST_XML_STAGING_DIR = 
+			VisionDlaConfig.getPropertyValue(ConfigConstants.REQUEST_XML_STAGING_DIR);
+	
+	private boolean isStagingFile = false;
+	private String reqXml;
+	private boolean isIncludeDataModel;
+	
+
+	public RequestXmlDataProcessor(String reqXmlContent){
+		this.reqXml = reqXmlContent;
+	}
+	
+	public RequestXmlDataProcessor(String reqFileName, boolean isLocaFile){
+		this.reqXml = reqFileName;
+		isStagingFile = true;
+	}	
+	
+	public List<WsdrRequestData> processRequestXml() throws VisionDlaException{
+		Reader reader = getRequestXmlReader(reqXml, isStagingFile);
+		List<T_842> t842List = unmarshallXml(reader);
+		if(t842List == null || t842List.size() == 0){
+			logger.error("processRequestXml(): T842 objects list is null or empty->" + reqXml);
+			throw new VisionDlaException("T842 objects list is null");
+		}
+		List<WsdrRequestData> listWsdrData = new ArrayList<WsdrRequestData>();
+		for(T_842 t842:t842List){
+			WsdrRequestData wsdrData = transformT842ToWsdr(t842);
+			listWsdrData.add(wsdrData);
+		}
+		return listWsdrData;
+	}
+	
+	private WsdrRequestData transformT842ToWsdr(T_842 t842){
+		if(t842 == null){
+			logger.error("transformT842ToWsdr():T842 object is null");
+			return null;
+		}
+		WsdrRequestData wsdrReqData = new WsdrRequestData();
+		setTransetPurposeCode(t842, wsdrReqData);
+		setTransetControlNumber(t842, wsdrReqData);
+		List<ReferenceIdentification> refList = T842Processor.getReferenceIdentification(t842);
+		setReferenceIdentificationData(refList, wsdrReqData);
+		if(isIncludeDataModel){
+			wsdrReqData.getRequestDataAggregate().setReferenceIdentification(refList);
+		}
+		// Add document number suffix
+		wsdrReqData.setDocNumberSuffix(T842Processor.getDocumentPrefix(t842));		
+		List<OrganizationInfo> listOrg = T842Processor.getOrganizationInfo(t842);
+		setOrganizationInfo(listOrg, wsdrReqData);
+		if(isIncludeDataModel){
+			wsdrReqData.getRequestDataAggregate().setOrganizationInfo(listOrg);
+		}
+		List<Quantity> listQty = T842Processor.getQuantity(t842);
+		setQuantities(listQty, wsdrReqData);
+		List<MonetaryAmount> listMonAmt = T842Processor.getMonetaryAmount(t842);
+		setMonetaryAmount(listMonAmt, wsdrReqData);
+		List<ItemIdentification> listItemId = T842Processor.getIdentification(t842);
+		setNSN(listItemId, wsdrReqData);
+		if(isIncludeDataModel){
+			wsdrReqData.getRequestDataAggregate().setItemIdentification(listItemId);
+		}
+		List<IndustryCode> listIc = T842Processor.getIndustryCode(t842);
+		setIndustryCodes(listIc, wsdrReqData);
+		if(isIncludeDataModel){
+			wsdrReqData.getRequestDataAggregate().setIndustryCode(listIc);
+		}
+		List<AdministrativeContact> listAdminContact = T842Processor.getAdministrativeContact(t842);
+		setAdministrativeContact(listAdminContact, wsdrReqData);
+		List<InstructionNote> listNote = T842Processor.getInstructionNote(t842);
+		setInstructionNote(listNote, wsdrReqData);
+		List<String> listAttNames = T842Processor.getPaperwork(t842);
+		setAttachemetNames(listAttNames, wsdrReqData);
+		return wsdrReqData;
+	}
+
+	private List<T_842> unmarshallXml(Reader reader) throws VisionDlaException{
+		List<T_842> lstT842 = null;
+		F_File_842AW fFile842AWObj = null;
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(F_File_842AW.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			//New Schema String schemaLocation = "004030F842A3WA38_Aug2514_ADC_1043A.xsd";
+			String schemaLocation = "004030F842A3WA36_Oct0913_ADC_1068.xsd";
+			SchemaFactory sf = SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			URL schemaUrl = RequestXmlDataProcessor.class.getClassLoader().getResource(schemaLocation);
+			Schema schema= sf.newSchema(schemaUrl);
+			unmarshaller.setSchema(schema);
+			
+			unmarshaller.setEventHandler(new ValidationEventHandler()  {
+	      	public boolean handleEvent(ValidationEvent ve) {
+	      		String eventMsg = "SEVERITY: " + ve.getSeverity() + " " + 
+	      											"MESSAGE: " + ve.getMessage() + " " +
+	      											"LINE NUMBER:  " + ve.getLocator().getLineNumber() + " " + 
+	      											"COLUMN NUMBER:  " + ve.getLocator().getColumnNumber() + " " + 
+	      											"OBJECT: " + ve.getLocator().getObject() + " " + 
+	      											"NODE: " + ve.getLocator().getNode() + " " +
+	      											"LINKED EXCEPTION: " + ve.getLinkedException() + " ";
+	      		logger.warn("handleEvent(): UnMarshaller event handler says->" + eventMsg); //+
+	      		return false;
+	      	}
+	      });			
+			JAXBElement<F_File_842AW> jaxbe842 = (JAXBElement<F_File_842AW>)unmarshaller.unmarshal(reader);
+			fFile842AWObj = jaxbe842.getValue();
+		} catch (JAXBException e) {
+			logger.error("unmarshallXml(): Failed to unmarshall Xml->" +reqXml, e);
+			VisionDlaException vdException = new VisionDlaException("Failed to unmarshall Request Xml");
+			if(e.getLinkedException() != null && e.getLinkedException().getMessage() != null){
+				vdException.setErrorMessage(e.getLinkedException().getMessage());
+			}
+			throw vdException;
+		}catch (Exception e) {
+			logger.error("unmarshallXml(): Schema validation Failed->" +reqXml, e);
+			throw new VisionDlaException("Schema validation Failed");
+		}			
+		if(fFile842AWObj == null){
+			logger.error("unmarshallXml(): F_File_842AW is null, Failed to unmarshall Xml->" +reqXml);
+			throw new VisionDlaException("Failed to unmarshall Request Xml");
+		}
+		lstT842 = fFile842AWObj.getT_Nonconformance_Report_842AW();
+		logger.info("unmarshallXml():Number of TNonconformanceReport842AW elements->"	+ lstT842.size());
+		return lstT842;
+	}
+	
+	private Reader getRequestXmlReader(String reqXml, boolean isStagingFile) throws VisionDlaException{
+		if(!isStagingFile){
+			if(reqXml == null || reqXml.trim().length() == 0){
+				logger.error("getRequestXmlReader(): Request XML content is null or empty");
+				throw new VisionDlaException("Request XML content is empty");
+			}
+			Reader reqXmlReader = new StringReader(reqXml);
+			return reqXmlReader;			
+		}
+		if(reqXml == null || reqXml.trim().length() == 0){
+			logger.error("processRequestXml(): Request Xml file name is null or empty");
+			throw new VisionDlaException("Request Xml file is null");
+		}
+		File reqXmlFile = new File(REQUEST_XML_STAGING_DIR + File.separator  + reqXml);
+		Reader reader;
+		try {
+			reader = new FileReader(reqXmlFile);
+		} catch (FileNotFoundException e) {
+			logger.error("getRequestXmlStream():Request XML not found in the staging directory->" + reqXml);
+			throw new VisionDlaException("Request XML not found in the staging directory");
+		}
+		return reader;
+	}
+	
+	private void setReferenceIdentificationData(List<ReferenceIdentification> listRef,
+			WsdrRequestData wsdrReqData){
+		for (ReferenceIdentification ref : listRef) {
+			if ("TN".equals(ref.getQualifier())) {
+				wsdrReqData.setDocumentNumber(ref.getIdentification());
+			} else if ("NN".equals(ref.getQualifier()) && "WEBSDR".equals(ref.getDescription())) {
+				wsdrReqData.setWebsdrNumber(ref.getIdentification());
+			} else if ("W8".equals(ref.getQualifier())) {
+				String docNumberSuffix = ref.getIdentification();
+				if(docNumberSuffix != null && docNumberSuffix.length() > 1){
+					docNumberSuffix = String.valueOf(docNumberSuffix.charAt(0));
+				}
+				wsdrReqData.setDocNumberSuffix(docNumberSuffix);
+			} else if ("87".equals(ref.getQualifier())) {
+				wsdrReqData.setSdrType(ref.getIdentification());
+			}else if("17".equals(ref.getQualifier())){
+				if("I".equals(ref.getIdentification())){
+					wsdrReqData.addRemarks("Category I quality report ");
+				}else if("II".equals(ref.getIdentification())){
+					wsdrReqData.addRemarks("Category II quality report ");
+				}
+			}// added for wrongItem
+			else if("XA".equals(ref.getQualifier())){
+				wsdrReqData.setWrongItemNSN(ref.getIdentification());
+			}
+			else if("XB".equals(ref.getQualifier())){
+				wsdrReqData.setWrongItemPartNumber(ref.getIdentification());
+				wsdrReqData.setWrongItemDescription(ref.getDescription());
+			}
+			
+		}	
+	}
+	
+	private void setTransetControlNumber(T_842 t842, WsdrRequestData wsdrReqData){
+		S_ST sst = t842.getS_Transaction_Set_Header();
+		if(sst != null && sst.getE_Transaction_Set_Control_Number() != null){
+			wsdrReqData.setTransetControlNumber(sst.getE_Transaction_Set_Control_Number().getValue());
+		}
+	}
+	
+	private void setTransetPurposeCode(T_842 t842, WsdrRequestData wsdrReqData){
+		S_BNR sbnr = t842.getS_Beginning_Segment_For_Nonconformance_Report();
+		if(sbnr != null && sbnr.getE_Transaction_Set_Purpose_Code() != null ){
+			wsdrReqData.setTransactionPurposeCode(sbnr.getE_Transaction_Set_Purpose_Code().getValue());
+		}
+	}
+	
+	private void setOrganizationInfo(List<OrganizationInfo> listOrg, 
+			WsdrRequestData wsdrReqData){
+		for (OrganizationInfo orgInfo : listOrg) {
+			String idCdQualifier = orgInfo.getIdCdQualifier();
+			String entityIdCode = orgInfo.getEntitiyIdCode();
+			if( "10".equals(idCdQualifier) && 
+				("41".equals(entityIdCode)||"Z6".equals(entityIdCode)) ) {
+				wsdrReqData.setSubmitterDodAAC(orgInfo.getIdentificationCode());
+				//added for Wrong Item
+			}else if ("SU".equals(entityIdCode)){
+					wsdrReqData.setWrongItemManufacturerName(orgInfo.getName());
+				 if( "33".equals(idCdQualifier))
+						 	wsdrReqData.setWrongItemCAGECode(orgInfo.getIdentificationCode());
+				
+			}
+		}
+		if (wsdrReqData.getSubmitterDodAAC() == null &&
+				wsdrReqData.getDocumentNumber() != null){
+			wsdrReqData.setSubmitterDodAAC(wsdrReqData.getDocumentNumber().substring(0, 6));
+		}
+	}
+	
+	private void setQuantities(List<Quantity> listQty, 
+			WsdrRequestData wsdrReqData){
+		for(Quantity qty:listQty){
+			if ("39".equals(qty.getQualifier())) {
+				wsdrReqData.setShippedQuantity(qty.getQuantity());
+				wsdrReqData.setUnitOfIssue(qty.getUnitCode());
+			} else if ("87".equals(qty.getQualifier())) {
+				wsdrReqData.setReceivedQuantity(qty.getQuantity());
+				wsdrReqData.setUnitOfIssue(qty.getUnitCode());
+			} else if ("86".equals(qty.getQualifier())) {
+				wsdrReqData.setDiscrepancyQuantity(qty.getQuantity());
+				wsdrReqData.setUnitOfIssue(qty.getUnitCode());
+				//added for wrong item
+			}else if ("75".equals(qty.getQualifier())) {
+				wsdrReqData.setWrongItemQuantityReceived(qty.getQuantity()+"");
+				wsdrReqData.setWrongItemUI(qty.getUnitCode());
+			}			
+		}
+	}
+	
+	private void setMonetaryAmount(List<MonetaryAmount> listMonAmt,
+			WsdrRequestData wsdrReqData){
+		for(MonetaryAmount monAmt : listMonAmt){
+			if ("Z3".equals(monAmt.getQualifier())) {
+				wsdrReqData.setUnitPrice(monAmt.getAmount());
+			}
+			if ("10".equals(monAmt.getQualifier())) {
+				wsdrReqData.setTotalCost(monAmt.getAmount());
+			}			
+		}
+	}
+	
+	private void setNSN(List<ItemIdentification> listItemId, 
+			WsdrRequestData wsdrReqData){
+		for(ItemIdentification item:listItemId){
+			if ("FS".equals(item.getQualifier())) {
+				wsdrReqData.setNSN(item.getIdentification());
+				break;
+			} 
+		}
+		for(ItemIdentification item:listItemId){
+			if ("CN".equals(item.getQualifier())) {
+				wsdrReqData.setNsnDescription(item.getIdentification());
+				break;
+			} 
+		}
+	}
+	
+	private void setIndustryCodes(List<IndustryCode> listIc, 
+			WsdrRequestData wsdrReqData){
+		for(IndustryCode ic : listIc){
+			if ("HB".equals(ic.getQualifier())) {
+				String actionCode = ic.getIndustryCode();
+				if( actionCode==null ) actionCode="";
+				wsdrReqData.setActionCode(actionCode);
+			}
+			if ("HA".equals(ic.getQualifier())) { 
+				String discrepancyCode = ic.getIndustryCode();
+				if(discrepancyCode != null && discrepancyCode.length() >0){
+					wsdrReqData.addDiscrepancyCode(ic.getIndustryCode());
+				}
+			}
+			if ("D".equals(ic.getQualifier())) {
+				wsdrReqData.setDocumentType(ic.getIndustryCode());
+			}
+		}
+	}
+	
+	private void setAdministrativeContact(List<AdministrativeContact> listAdminContact,
+			WsdrRequestData wsdrReqData){
+		List<AdministrativeContact> puContactList = null;
+		for (AdministrativeContact adminContact : listAdminContact) {
+			if ("PU".equals(adminContact.getFunctionCode())){
+				if(puContactList == null){puContactList = new ArrayList<AdministrativeContact>();}
+				puContactList.add(adminContact);
+			}
+			if ("00".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("PU".equals(adminContact.getFunctionCode())) {
+					setContactName(wsdrReqData, adminContact);
+					setCommunicationContact(wsdrReqData, adminContact);
+				}
+			} else if ("45".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("SM".equals(adminContact.getFunctionCode())) {
+					setContactName(wsdrReqData, adminContact);
+					setCommunicationContact(wsdrReqData, adminContact);
+				}
+			} else if ("15".equals(wsdrReqData.getTransactionPurposeCode()) ||
+					"50".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("RQ".equals(adminContact.getFunctionCode())) {
+					setContactName(wsdrReqData, adminContact);
+					setCommunicationContact(wsdrReqData, adminContact);
+				}
+			} else if ("CO".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("CB".equals(adminContact.getFunctionCode())) {
+					setContactName(wsdrReqData, adminContact);
+					setCommunicationContact(wsdrReqData, adminContact);
+				}
+			} else if ("01".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("PI".equals(adminContact.getFunctionCode())) {
+					setContactName(wsdrReqData, adminContact);
+					setCommunicationContact(wsdrReqData, adminContact);
+				}
+			}
+		}
+		if(puContactList != null){
+			for(AdministrativeContact puContact:puContactList){
+				setContactName(wsdrReqData, puContact);
+				setCommunicationContact(wsdrReqData, puContact);
+			}
+		}
+	}
+	
+	private void setContactName(WsdrRequestData wsdrReqData, 
+			AdministrativeContact adminContact){
+		if(wsdrReqData.getContactName() == null){
+			wsdrReqData.setContactName(adminContact.getContactName());
+		}
+	}
+	
+	private void setCommunicationContact(WsdrRequestData wsdrReqData, 
+			AdministrativeContact adminContact){
+		if (wsdrReqData.getContactPhone() == null) {
+			if ("TE".equals(adminContact.getQualifier())) {
+				wsdrReqData.setContactPhone(adminContact.getContact());
+			} else if ("TE".equals(adminContact.getQualifier1())) {
+				wsdrReqData.setContactPhone(adminContact.getContact1());
+			} else if ("TE".equals(adminContact.getQualifier2())) {
+				wsdrReqData.setContactPhone(adminContact.getContact2());
+			}
+		}
+		if (wsdrReqData.getContactEmail() == null) {
+			if ("EM".equals(adminContact.getQualifier())) {
+				wsdrReqData.setContactEmail(adminContact.getContact());
+			} else if ("EM".equals(adminContact.getQualifier1())) {
+				wsdrReqData.setContactEmail(adminContact.getContact1());
+			} else if ("EM".equals(adminContact.getQualifier2())) {
+				wsdrReqData.setContactEmail(adminContact.getContact2());
+			}
+		}
+		if (wsdrReqData.getContactPhoneExt() == null) {
+			if ("AU".equals(adminContact.getQualifier())) {
+				wsdrReqData.setContactPhoneExt(adminContact.getContact());
+			} else if ("AU".equals(adminContact.getQualifier1())) {
+				wsdrReqData.setContactPhoneExt(adminContact.getContact1());
+			} else if ("AU".equals(adminContact.getQualifier2())) {
+				wsdrReqData.setContactPhoneExt(adminContact.getContact2());
+			}
+		}		
+	}
+	
+	private void setInstructionNote(List<InstructionNote> listNote, 
+			WsdrRequestData wsdrReqData){
+		List<InstructionNote> rptNoteList = null;
+		for (InstructionNote iNote : listNote) {
+			logger.info ("setInstructionNote():Note->" + wsdrReqData.getTransactionPurposeCode() + "-" + iNote.getReferenceCode() + iNote.getDescription());
+			if(iNote.getDescription() == null || 
+					iNote.getDescription().trim().isEmpty()){ //FRD VISION-3371
+				continue;
+			}
+			if ("RPT".equals(iNote.getReferenceCode())){
+				if(rptNoteList == null){rptNoteList = new ArrayList<InstructionNote>();}
+				rptNoteList.add(iNote);
+			}
+			if ("00".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("RPT".equals(iNote.getReferenceCode()))
+					wsdrReqData.addRemarks(iNote.getDescription());
+			} else if ("45".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("SSC".equals(iNote.getReferenceCode()))
+					wsdrReqData.addRemarks(iNote.getDescription());
+			} else if ("15".equals(wsdrReqData.getTransactionPurposeCode()) ||
+					"50".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("ACI".equals(iNote.getReferenceCode()))
+					wsdrReqData.addRemarks(iNote.getDescription());
+			} else if ("CO".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("COD".equals(iNote.getReferenceCode()))
+					wsdrReqData.addRemarks(iNote.getDescription());
+			} else if ("01".equals(wsdrReqData.getTransactionPurposeCode())) {
+				if ("EBK".equals(iNote.getReferenceCode()))
+					wsdrReqData.addRemarks(iNote.getDescription());
+			}
+			//Other reference codes FRD VISION-3372
+			List<String> otherRefCodes = Arrays.asList(new String[] 
+					{"ACN", "CIR", "DGN", "ODD", "POL", "REC", "TPO"});
+			if(otherRefCodes.contains(iNote.getReferenceCode())){
+				wsdrReqData.addRemarks(iNote.getDescription());
+			}
+		}
+		if(wsdrReqData.getRemarks() == null && rptNoteList != null){
+			for(InstructionNote rptNote:rptNoteList){
+				wsdrReqData.addRemarks(rptNote.getDescription());
+			}
+		}
+	}
+	
+	private void setAttachemetNames(List<String> listAttNames, 
+			WsdrRequestData wsdrReqData){
+		if(listAttNames != null && listAttNames.size() > 0){
+			wsdrReqData.setAttachmentNames(listAttNames);
+			wsdrReqData.setAttachmentCount(listAttNames.size());
+		}else{
+			wsdrReqData.setAttachmentCount(0);
+		}
+	}
+	
+	/**
+	 * @param isIncludeDataModel the isIncludeDataModel to set
+	 */
+	public void setIncludeDataModel(boolean isIncludeDataModel) {
+		this.isIncludeDataModel = isIncludeDataModel;
+	}	
+}

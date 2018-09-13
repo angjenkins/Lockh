@@ -1,0 +1,17 @@
+release.status=integration
+publish.branch=r
+featureset.rev=13
+milestone.rev=02
+patch.rev=0
+release.tag=${featureset.rev}.${milestone.rev}.${patch.rev}
+svn.release.tag=d${release.tag}
+latest.milestone=${publish.branch}${featureset.rev}.+
+latest.release=${publish.branch}${featureset.rev}.${milestone.rev}.+
+latest.this.release=${publish.branch}${featureset.rev}.${milestone.rev}.${patch.rev}.+
+latest.last.milestone=${publish.branch}2.3.+
+latest.last.release=${publish.branch}${featureset.rev}.4.29.+
+release.branch.tag=enterprise.services
+release.project=enterprise.services
+release.modules=Domain.Models,Customer.Services,Order.Services,Vendor.Services,Enterprise.Build
+buildable.modules=Domain.Models,Customer.Services,Order.Services,Vendor.Services
+deployable.modules=

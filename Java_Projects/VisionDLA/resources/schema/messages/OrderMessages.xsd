@@ -1,0 +1,33 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	xmlns:ord="http://fas.gsa.gov/Order/v1.0"
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0"
+	targetNamespace="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0">
+
+	<import  namespace="http://fas.gsa.gov/Global/v1.0" schemaLocation="../Global.xsd"/>
+	<import	namespace="http://fas.gsa.gov/Order/v1.0"  schemaLocation="../OrderDetails.xsd"/>
+
+	<complexType name="CscPORequest">
+		<sequence>
+			<element name="ggsSessionNumber" type="long"/>
+			<element name="manufacturePartNumber" type="string"/>
+			<element name="prefix" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="CscPOResponse">
+		<sequence>
+			<element name="poNumber" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="CancelOrderRequest">
+		<sequence>
+			<element name="orderItem" type="ord:OrderItem"/>
+			<element name="supplementAddrAAC" type="glb:string6" nillable="true"/>
+			<element name="distributionCode" type="glb:string3" nillable="true"/>
+			<element name="projectCode" type="glb:string3" nillable="true"/>
+			<element name="priorityCode" type="int" nillable="true"/>			
+		</sequence>
+	</complexType>		
+</schema>

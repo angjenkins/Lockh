@@ -1,0 +1,129 @@
+/**
+ * 
+ */
+
+
+
+import gov.gsa.fas.attachment.config.rest.AttachmentConfig;
+import gov.gsa.fas.attachment.config.rest.ConfigConstants;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+import javax.xml.soap.Node;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPEnvelope;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFault;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.log4j.Logger;
+
+/**
+ * @author KamalJSarabi
+ *
+ */
+public class AttachmentHandler implements SOAPHandler<SOAPMessageContext> {
+	private static final Logger logger = Logger.getLogger(AttachmentHandler.class.getName());
+	
+	CharSequence invalids="\\/ \t\"\'";
+	
+	 public boolean handleMessage(SOAPMessageContext context) {
+	 
+		logger.info("Server : handleMessage()......");
+	 
+		Boolean isRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+	 
+		//for response message only, true for outbound messages, false for inbound
+		if(!isRequest){
+	 
+		try{
+		    SOAPMessage soapMsg = context.getMessage();
+		    /*java.util.Map<java.lang.String, java.util.List<java.lang.String>> headers=(Map<String, List<String>>) context.get(MessageContext.HTTP_REQUEST_HEADERS);
+		    if (headers.keySet() !=null && !headers.keySet().isEmpty()){
+		    	Iterator keys = headers.keySet().iterator();
+		    	while(keys.hasNext()){
+		    		String key= (String)keys.next();
+		    		logger.info("HeaderKey->"+ key);
+		    		logger.info("Header values->"+headers.get(key));
+		    		//getting Basic Authentication
+		    		checkForAuthentication(context,key,headers.get(key).toString());
+		    		
+		    	}
+		    	
+		    }*/
+		    
+		       //tracking
+		      // soapMsg.writeTo(System.out);
+	 
+			}catch(Exception e){
+				logger.error(e);
+			}
+	 
+		    }
+	 
+		  //continue other handler chain
+		  return true;
+		}
+	 
+		public boolean handleFault(SOAPMessageContext context) {
+	 
+			logger.info("Server : handleFault()......");
+	 
+			return true;
+		}
+	 
+		public void close(MessageContext context) {
+			logger.info("Server : close()......");
+		}
+	 
+		
+		public Set<QName> getHeaders() {
+			logger.info("Server : getHeaders()......");
+			return null;
+		}
+	 
+		 private void checkForAuthentication(SOAPMessageContext context,String key,String value){
+			 if(key.equalsIgnoreCase("Authorization.")){
+	    			String auth=value;
+	    			logger.info("Found Authentication->"+auth);
+	    			auth=auth.substring(auth.indexOf(" "));
+	    			logger.info("Extracted Authentication->"+auth);
+	    			String decodedAuth=new String(Base64.decodeBase64(auth.getBytes()));
+	    			//logger.info("decoded->"+decodedAuth);
+	    			String username=decodedAuth.substring(0, decodedAuth.indexOf(":"));
+	    			logger.info("decoded username->"+username);
+	    			if (username!=null){
+	    				
+						if(username.contains(invalids)||username.length()>20)
+	    					generateSOAPErrMessage(context.getMessage(),"username has invalid characters or has big size")	;
+	    				context.put("username", username);
+	   		     		context.setScope("username", MessageContext.Scope.APPLICATION);
+	    			}
+	    		}
+			 
+		 }
+	     private void generateSOAPErrMessage(SOAPMessage msg, String reason) {
+	       try {
+	          SOAPBody soapBody = msg.getSOAPPart().getEnvelope().getBody();
+	          SOAPFault soapFault = soapBody.addFault();
+	          soapFault.setFaultString(reason);
+	          logger.info("Message->"+reason);
+	         throw new SOAPFaultException(soapFault); 
+	       }
+	       catch(SOAPException e) { }
+	    }
+	     
+	 
+	}

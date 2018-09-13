@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<wsdl:definitions 
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+xmlns:ns1="http://www.fpdsng.com/FPDS" 
+xmlns:tns="http://fas.gsa.gov/FPDSAtomFeed/service" 
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+name="FPDSAtomFeedAccessImpl" targetNamespace="http://fas.gsa.gov/FPDSAtomFeed/service"
+xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
+
+
+  <wsdl:types>
+    <xsd:schema
+    	targetNamespace="http://fas.gsa.gov/FPDSAtomFeed/service">
+    	<xsd:import schemaLocation="../schema/stopgapaward.xsd" namespace="http://www.fpdsng.com/FPDS"/>
+    	<xsd:import schemaLocation="../schema/idv_process.xsd" namespace="http://www.fpdsng.com/FPDS"/>
+    	<xsd:complexType name="AtomFeedRequest">
+		<xsd:sequence>
+			<xsd:element name="signedDateStart" type="xsd:string" minOccurs="0" />
+			<xsd:element name="signedDateEnd" type="xsd:string" minOccurs="0" /> 
+			<xsd:element name="PIID" type="xsd:string" minOccurs="0" />
+			<xsd:element name="modificationNumber" type="xsd:string" minOccurs="0" />
+			<xsd:element name="lastModDateStart" type="xsd:string" minOccurs="0" />
+			<xsd:element name="lastModDateEnd" type="xsd:string" minOccurs="0" />
+			<xsd:element name="start" type="xsd:long" />
+			<xsd:element name="contractType" type="xsd:string" minOccurs="0" />	
+		</xsd:sequence>
+	</xsd:complexType>
+    	<xsd:element name="getAtomFeedRequest" type="tns:AtomFeedRequest"/>
+    	<xsd:element name="getAtomFeedCountRequest" type="tns:AtomFeedRequest"/>	
+    	<xsd:element name="getAtomFeedResponse" type="xsd:string"  />
+    	<xsd:element name="getAtomFeedCountResponse" type="xsd:long"  />
+    	<xsd:element name="getAwardListRequest" type="tns:AtomFeedRequest"/>
+    	<xsd:element name="getAwardListResponse" type="ns1:ListOfAwards"  />
+    	<xsd:element name="getIDVListRequest" type="tns:AtomFeedRequest"/>
+    	<xsd:element name="getIDVListResponse" type="ns1:ListOfIDVs"  />
+		<xsd:element name="atomFeedFault"  type="xsd:string" />  
+    </xsd:schema>
+  </wsdl:types>
+  
+  <wsdl:message name="getAtomFeedRequest">
+    <wsdl:part element="tns:getAtomFeedRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAtomFeedResponse">
+    <wsdl:part element="tns:getAtomFeedResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAtomFeedCountRequest">
+    <wsdl:part element="tns:getAtomFeedCountRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAtomFeedCountResponse">
+    <wsdl:part element="tns:getAtomFeedCountResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAwardListRequest">
+    <wsdl:part element="tns:getAwardListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAwardListResponse">
+    <wsdl:part element="tns:getAwardListResponse" name="parameters"/>
+  </wsdl:message>
+    <wsdl:message name="getIDVListRequest">
+    <wsdl:part element="tns:getIDVListRequest" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getIDVListResponse">
+    <wsdl:part element="tns:getIDVListResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="ServiceFault">
+		<wsdl:part element="tns:atomFeedFault" name="ServiceFault"/>
+  </wsdl:message>
+  
+  <wsdl:portType name="FPDSAtomFeedAccess">
+    <wsdl:operation name="getAtomFeed">
+      <wsdl:input message="tns:getAtomFeedRequest"/>
+      <wsdl:output message="tns:getAtomFeedResponse"/>
+      <wsdl:fault name="getAtomFeedFault"	message="tns:ServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="getAtomFeedCount">
+      <wsdl:input message="tns:getAtomFeedCountRequest"/>
+      <wsdl:output message="tns:getAtomFeedCountResponse"/>
+      <wsdl:fault name="getAtomFeedCountFault"	message="tns:ServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="getAwardList">
+      <wsdl:input message="tns:getAwardListRequest"/>
+      <wsdl:output message="tns:getAwardListResponse"/>
+      <wsdl:fault name="getAwardListFault"	message="tns:ServiceFault" />
+    </wsdl:operation>    
+    <wsdl:operation name="getIDVList">
+      <wsdl:input message="tns:getIDVListRequest"/>
+      <wsdl:output message="tns:getIDVListResponse"/>
+      <wsdl:fault name="getIDVListFault"	message="tns:ServiceFault" />
+    </wsdl:operation>    
+    
+    
+  </wsdl:portType>
+  <wsdl:binding name="FPDSAtomFeedAccessSOAP" type="tns:FPDSAtomFeedAccess">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getAtomFeed">
+      <soap:operation soapAction="http://fas.gsa.gov/FPDSAtomFeed/service/getAtomFeed"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getAtomFeedFault">
+				<soap:fault use="literal" name="getAtomFeedFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getAtomFeedCount">
+      <soap:operation soapAction="http://fas.gsa.gov/FPDSAtomFeed/service/getAtomFeedCount"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getAtomFeedCountFault">
+				<soap:fault use="literal" name="getAtomFeedCountFault" />
+      </wsdl:fault>
+   </wsdl:operation>
+    <wsdl:operation name="getAwardList">
+      <soap:operation soapAction="http://fas.gsa.gov/FPDSAtomFeed/service/getAwardList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getAwardListFault">
+				<soap:fault use="literal" name="getAwardListFault" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getIDVList">
+      <soap:operation soapAction="http://fas.gsa.gov/FPDSAtomFeed/service/getIDVList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="getIDVListFault">
+				<soap:fault use="literal" name="getIDVListFault" />
+      </wsdl:fault>
+    </wsdl:operation>   
+
+  </wsdl:binding>
+  <wsdl:service name="FPDSAtomFeedAccess">
+    <wsdl:port binding="tns:FPDSAtomFeedAccessSOAP" name="FPDSAtomFeedAccess">
+      <soap:address location="http://localhost:8080/FPDSAtomFeed.services/FPDSAtomFeedAccess"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

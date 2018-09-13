@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+ "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<!-- Database connection settings -->
+	  	<!-- Database connection settings -->
+        
+        <!-- 
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://159.142.46.185:3308/roadsmysql?zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true</property> 
+        <property name="connection.username">AutoChoice</property>
+        <property name="connection.password">Benedict01!$</property>
+        -->
+        
+        <property name="hibernate.connection.datasource">java:autovendorDS</property>
+        
+ 		
+ 		 <!-- <property name="hibernate.connection.provider_class"> org.hibernate.connection.C3P0ConnectionProvider </property>-->
+ 		
+         <!-- <property name="connection.release_mode">auto</property>-->
+        
+        <!-- JDBC connection pool (use the built-in) -->
+         <!-- <property name="connection.pool_size">1</property>-->
+ 
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+ 
+
+		<!-- Session context management -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- Disable 2nd level cache -->
+		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+		<!-- Echo all sql to sdtout -->
+		<property name="show_sql">true</property> 
+		 <!-- 
+		<property name="hibernate.c3p0.idle_test_period">260</property>--> <!-- In seconds -->  
+		<!-- 
+		<property name="hibernate.c3p0.min_size">5	</property>
+		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.timeout">1200</property>         
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.unreturnedConnectionTimeout">1800</property>
+		<property name="hibernate.c3p0.debugUnreturnedConnectionStackTraces">true</property>
+		<property name="hibernate.c3p0.preferredTestQuery">select 1 from control</property>
+		<property name="hibernate.c3p0.testconnectiononcheckin">true</property>
+		<property name="hibernate.c3p0.testConnectionOnCheckout">false</property>
+		<property name="hibernate.c3p0.acquireRetryAttempts">30</property> 
+	    <property name="hibernate.c3p0.acquireRetryDelay">1000</property> 
+	    <property name="hibernate.c3p0.breakAfterAcquireFailure">false</property> 
+	    <property name="hibernate.c3p0.checkouttimeout">30000</property>
+  -->
+<!--   <property name="hibernate.c3p0.min_size">2</property> -->
+<!--   <property name="hibernate.c3p0.max_size">10</property> -->
+<!--   <property name="hibernate.c3p0.timeout">280</property> -->
+<!--   <property name="hibernate.c3p0.max_statements">50</property> -->
+<!--   <property name="hibernate.c3p0.idle_test_period">260</property>  -->
+<!--   <property name="hibernate.c3p0.preferredTestQuery">select 1 from control</property> -->
+<!--   <property name="hibernate.c3p0.testconnectiononcheckin">true</property>	 -->
+<!--   <property name="hibernate.c3p0.acquireRetryAttempts">30</property> -->
+<!--   <property name="hibernate.c3p0.acquireRetryDelay">1000</property> -->
+<!--   <property name="hibernate.c3p0.breakAfterAcquireFailure">false</property> -->
+<!--   <property name="hibernate.c3p0.checkouttimeout">30000</property>   -->
+		
+
+         <!--  arrange alphabethically  the dto for ease of reading --> 
+
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.AgBuTableDTO"/> 
+
+        <mapping class="gov.gsa.fas.AutoChoice.DTO.BatchControlDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.BidLineNewDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.BidLineDevNewDTO"/> 
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.BidLineOptCheckerDTO"/>
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.BidLinePictureDTO"/>
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.BidLineOptNewDTO"/>
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.BuyerTableDTO"/>
+
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.ContractDTO"/>
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.ContrCaseDTO" />
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.ContrLineDTO"/>
+        <mapping class="gov.gsa.fas.AutoChoice.DTO.ContrLineOptionDTO"/>
+        <mapping class="gov.gsa.fas.AutoChoice.DTO.ContrDeviationDTO"/>
+        <mapping class="gov.gsa.fas.AutoChoice.DTO.ContrDUNSDTO"/> 
+
+        <mapping class="gov.gsa.fas.AutoChoice.DTO.ContrLineOptExtDTO"/>
+    
+ 		<mapping class="gov.gsa.fas.AutoChoice.DTO.OptionsCategoryDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.OptionsTableDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.OptionTableValueDTO"/>
+		 
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.StatesDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.ControlDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.VehTypeDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.StdItemDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.StdItemOptionDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.StdItmFedDTO"/> 
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.GroupDunsDTO"/>
+	   
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.ModelDTO" />
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.ModelGroupdunsDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.ModelColorDTO" /> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.ModelColorBidDTO"/> 
+	   
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.UserAgBuReportDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.UserAccountGroupDUNSDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.UserAccountDTO"/>  
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.StdItemVerbiageDTO"/>
+
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.VendorReportDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.RegionTableDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.RequisitionsFSRDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.RequisitionsDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.OrderStatusDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.ReportEmailDTO"/>
+	    
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.UserGroupDTO"/> 
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.UserGroupAccessDTO"/>
+	    <mapping class="gov.gsa.fas.AutoChoice.DTO.RequisitionsJustDTO"/> 
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.RequisitionsCartDTO"/> 
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.RequisitionsCartColorDTO"/> 
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.OptionFileCartDTO"/> 
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.StatesZipDTO"/>
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.FileUploadDTO"/>
+		<mapping class="gov.gsa.fas.AutoChoice.DTO.UserAuditTrailDTO"/>
+		 
+	</session-factory>
+
+</hibernate-configuration>

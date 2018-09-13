@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/generated"/>
+	<classpathentry kind="src" path="src/impl"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="src/restservice"/>
+	<classpathentry kind="src" path="src/restclient"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="lib/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="lib/jaxws-tools.jar"/>
+	<classpathentry kind="lib" path="lib/jbossws-native-core.jar"/>
+	<classpathentry kind="lib" path="lib/jbossws-spi.jar"/>
+	<classpathentry kind="lib" path="lib/stax-ex.jar"/>
+	<classpathentry kind="lib" path="lib/streambuffer.jar"/>
+	<classpathentry kind="lib" path="lib/wstx.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.12.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-javaee.jar"/>
+	<classpathentry kind="lib" path="lib/jsch-0.1.50.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/jars/javax.ws.rs.jar"/>
+	<classpathentry kind="lib" path="C:/jars/com.sun.jersey.jersey-core-1.4.0.jar"/>
+	<classpathentry kind="lib" path="C:/jars/jboss-annotations-ejb3.jar"/>
+	<classpathentry kind="lib" path="C:/Myong/jboss-eap-5.2/jboss-as/server/default/deploy/RESTFileAttachmentService.war/WEB-INF/lib/jersey-multipart-1.8.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

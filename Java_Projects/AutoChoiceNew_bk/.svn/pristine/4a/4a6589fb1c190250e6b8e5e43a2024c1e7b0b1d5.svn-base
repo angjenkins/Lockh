@@ -1,0 +1,14 @@
+config.properties#UploadPath= \\\\gsab0.fas.gsa.gov\\fmsdir\\Fleet\\ROADS\\roadsimages\\
+#UploadPath=////gsab0.fas.gsa.gov//fmsdir//Fleet//ROADS//roadsimages//
+
+#
+#development
+#
+#UploadPath=////clearpathinternal.fas.gsa.gov//FMSDIR//FLEET//ROADS//roadsimages//
+
+
+#
+#production
+#
+UploadPath=////clearpathinternal.fas.gsa.gov//FLEETDIR//ROADS//roadsimages//
+	

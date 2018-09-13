@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="xjcjaxb">
+	<property name="src.generated.dir" value="${basedir}/src/generated/java" />
+	<property name="src" value="${basedir}/src" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+		<classpath>
+			<fileset dir="${lib.dir}" includes="*.jar" />
+		</classpath>
+	</taskdef>
+
+	<target name="generate-request">
+		<echo message="Gererating Request objects using JAXB xjc task" />
+		<mkdir dir="${src}/gov/gsa/fas/vision/dla/request/beans" />
+		<xjc destdir="${src}" package="gov.gsa.fas.vision.dla.request.beans">
+			<schema dir="${src}" includes="004030F842A3WA38_Aug2514_ADC_1043A.xsd" />
+			<!--<schema dir="${resource.dir}/XSD" includes="004030F842A3WA36_Oct0913_ADC_1068.xsd"/> -->
+			<binding dir="." includes="*.xjb" />
+			<arg line="-nv -verbose" />
+		</xjc>
+	</target>
+</project>

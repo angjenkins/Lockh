@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project  basedir="." default="build" name="enterprise.services"   >
+	<import file="common.xml" />
+	<property file="build.local.properties" />
+	<import file="svn-build.xml"/>
+
+	<property name="build.home" value="build" />
+	<property name="database.environment" value="dev" />
+	<property name="resource.dir" value="${basedir}/resources" />
+	<property name="datasource.file" value="${resource.dir}/datasource/enterprise-ds.xml" />
+	<property name="services.file" value="${resource.dir}/config/services.properties" />
+	<property name="environment.properties" value="${basedir}/environment/${database.environment}.env.properties"/>
+	<property name="release.projects" value="${release.modules}" />
+	<property name="projects" value="${buildable.modules}" />
+<!-- SVN Related targets -->
+	<target name="init" description="cleans existing projects and checksout the  build." >
+		     <delete dir="projects" />
+		     <delete dir="build" />	
+			<mkdir dir="projects" />
+			<copy todir="projects/Enterprise.Build" includeemptydirs="false">
+		    	<fileset dir="../Enterprise.Build"/>
+		    </copy>
+		
+		    <delete dir="projects/Enterprise.Build/projects" />
+			<copy todir="projects/lib" includeemptydirs="false">
+				<fileset dir="../lib"/>
+			</copy>
+		    <mkdir dir="build" />
+	</target>
+	<target name="remove"  description="removes project under projects folder">
+			<delete dir="projects/${project.name}" />
+	</target>
+	<target name="delete" description="deletes all existing projects under projetcs" >
+	        	<foreach list="${projects}" target="remove" 
+		param="project.name" inheritall="true" />    	
+	</target>
+	<target name="checkout" depends="delete" description="checkouts  projects from svn either latest/tags based on ${release.type}  " >
+			<foreach list="${projects}" target="svn-build.checkoutLatest" 
+		param="project.name" inheritall="true" />
+	</target>
+	<target name="checkoutBranch" depends="delete" description="checkouts  projects from svn  latest/branch    " >
+			<foreach list="${projects}" target="svn-build.checkoutBranch" 
+			param="project.name" inheritall="true" />
+		</target>
+		
+	<target name="checkoutTag" depends="delete" description="checkouts  projects from svn either latest/tags based on ${release.type}  " >
+		<foreach list="${projects}" target="svn-build.checkoutTag" 
+		param="project.name" inheritall="true" />
+	</target>
+	<target name="tag" depends="svn-build.initTag" description="tags projects in svn from trunk">
+		<foreach list="${release.projects}" target="svn-build.tag" 
+			param="project.name" inheritall="true" />   	
+    </target>
+	<!-- end of SVN Related targets -->
+	
+	<target name="build" description="calls build target of all projects">
+				
+		<subant target="build" buildpath="projects/Customer.Services/build.xml" />
+		<subant target="build" buildpath="projects/Order.Services/build.xml" />
+		<subant target="build" buildpath="projects/Vendor.Services/build.xml" />
+		<delete file="${build.home}/${ant.project.name}.ear" />
+		<ear destfile="${build.home}/${ant.project.name}.ear" appxml="resources/ear/application.xml">
+			<fileset dir="projects/Enterprise.Build/${build.home}" includes="*.services.jar" />
+		</ear>
+	</target>	
+ 	<target name="package">
+ 		<delete file="${build.home}/${ant.project.name}.ear" />
+		<ear destfile="${build.home}/${ant.project.name}.ear" appxml="resources/ear/application.xml">
+			<fileset dir="${build.home}" includes="*.services.jar" />
+		</ear>
+	</target>
+
+	<target name="deploy" description="deploys ear file to jboss or staging folder">
+		<if>
+			<equals arg1="${jboss.app.host}" arg2="${build.host}"   trim="true" />
+	 	 <then>
+	 	 	<echo>####Local deployment###</echo>
+	 	 	<copy todir="${jboss.app.deployment.home}/deploy">
+	 	 				<fileset dir="${build.home}">
+	 	 					<include name="${ant.project.name}*.ear" />
+	 	 				</fileset>
+	 	 	</copy>
+	 	 </then>
+		<else>
+			<echo>####Remote deployment###</echo>
+			<copy todir="${staging.dir}">
+ 				<fileset dir="${build.home}">
+ 					<include name="${ant.project.name}*.ear" />
+ 				</fileset>
+			</copy>
+		</else>
+	 </if>	
+ </target>
+
+	<target name="configure.datasource">
+		<copy todir="${build.home}" file="${datasource.file}" overwrite="true" failonerror="false">
+			<filterset begintoken="$${" endToken="}" filtersfile="${environment.properties}" />
+		</copy>
+	</target>
+	
+	<target name="configure.services">
+		<copy todir="${build.home}" file="${services.file}" overwrite="true" failonerror="false">
+			<filterset begintoken="$${" endToken="}" filtersfile="${environment.properties}" />
+		</copy>
+	</target>
+
+
+	<target name="deploy.datasource">
+		<copy file="${build.home}/enterprise-ds.xml" todir="${jboss.app.deployment.home}/deploy"/>
+	</target>
+
+	<!--<target name="build" depends="package" />-->
+
+	<target name="clean">
+		<delete dir="${build.home}" includeEmptyDirs="true" includes="**/*" />
+	</target>
+	
+	<target name="buildAll">
+		<ant antfile="build.xml" dir="../Customer.Services" target="build" inheritall="false"/>
+		<ant antfile="build.xml" dir="../Order.Services" target="build" inheritall="false"/>
+		<ant antfile="build.xml" dir="../Vendor.Services" target="build" inheritall="false"/>
+		<antcall target="package"/>
+	</target>
+	
+	<target name="cleanAll">
+		<ant antfile="build.xml" dir="../Customer.Services" target="clean" inheritall="false"/>
+		<ant antfile="build.xml" dir="../Order.Services" target="clean" inheritall="false"/>
+		<ant antfile="build.xml" dir="../Vendor.Services" target="clean" inheritall="false"/>
+		<antcall target="clean"/>
+	</target>	
+
+</project>

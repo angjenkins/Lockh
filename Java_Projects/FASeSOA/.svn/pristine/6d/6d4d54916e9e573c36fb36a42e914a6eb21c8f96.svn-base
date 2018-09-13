@@ -1,0 +1,17 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:cmplnt="http://fas.gsa.gov/OrderComplaint/v1.0"	
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+
+	<import  namespace="http://fas.gsa.gov/Global/v1.0" schemaLocation="../Global.xsd"/>
+	<import	namespace="http://fas.gsa.gov/OrderComplaint/v1.0"  schemaLocation="../OrderComplaint.xsd"/>
+	
+	<complexType name="ModifyComplaint">
+		<sequence>
+			<element name="complaintKey" type="glb:positiveIntRequired10"/>
+			<element name="complaint" type="cmplnt:Complaint"/>
+		</sequence>
+	</complexType>
+	
+</schema>

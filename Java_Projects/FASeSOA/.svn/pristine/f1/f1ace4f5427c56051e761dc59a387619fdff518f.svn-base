@@ -1,0 +1,72 @@
+<wsdl:definitions name="VendorService"
+	targetNamespace="http://fas.gsa.gov/services/Vendor/v1.0"
+	xmlns:tns="http://fas.gsa.gov/services/Vendor/v1.0"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"  
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:vdr="http://fas.gsa.gov/Vendor/v1.0"
+ 	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+	
+	<!--  WSDL Types declarations -->	
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://fas.gsa.gov/services/Vendor/v1.0"
+    						xmlns:tns="http://fas.gsa.gov/services/Vendor/v1.0"
+    						xmlns:vdr="http://fas.gsa.gov/Vendor/v1.0"
+    						xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0"  
+    						xmlns:flt="http://fas.gsa.gov/Faults/v1.0"
+    						xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<xsd:import namespace="http://fas.gsa.gov/Vendor/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/services/Messages/v1.0" />
+    	<xsd:import namespace="http://fas.gsa.gov/Faults/v1.0" />
+    	
+    	<xsd:element name="getVendorRequest" type="msg:VendorSearchRequest"/>
+    	<xsd:element name="getVendorResponse" type="vdr:VendorDetails"/>
+    	<!--  Service fault element -->
+			<xsd:element name="serviceFault"	nillable="true" type="flt:ServiceFault" />
+		</xsd:schema>
+  </wsdl:types>
+  <!-- WSDL Message declarations -->
+  <wsdl:message name="GetVendorRequest">
+    <wsdl:part element="tns:getVendorRequest" name="vendorRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetVendorResponse">
+    <wsdl:part element="tns:getVendorResponse" name="vendorResponse"/>
+  </wsdl:message>
+	<wsdl:message name="ServiceFault">
+  	<wsdl:part element="tns:serviceFault" name="serviceFault" />
+  </wsdl:message> 
+    
+   <!--  WSDL Port Operations --> 
+  <wsdl:portType name="VendorService">
+    <wsdl:operation name="getVendorDetails">
+      <wsdl:input message="tns:GetVendorRequest"/>
+      <wsdl:output message="tns:GetVendorResponse"/>
+			<wsdl:fault message="tns:ServiceFault"  name="getVendorFault" />      
+    </wsdl:operation>
+  </wsdl:portType>
+  
+  <!--  WSDL Binding -->
+  <wsdl:binding name="VendorServiceBinding" type="tns:VendorService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getVendorDetails">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="getVendorFault">
+  			<soap:fault use="literal" name="getVendorFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>
+  </wsdl:binding>
+  
+  <!--  WSDL Service -->
+  <wsdl:service name="VendorService">
+    <wsdl:port binding="tns:VendorServiceBinding" name="VendorServiceBinding">
+      <soap:address location="http://localhost:8080/vendor.serivces/VendorService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

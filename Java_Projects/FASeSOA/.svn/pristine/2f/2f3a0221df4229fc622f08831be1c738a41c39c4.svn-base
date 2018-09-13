@@ -1,0 +1,61 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:discr="http://fas.gsa.gov/OrderDiscrepancy/v1.0">
+
+	<import	namespace="http://fas.gsa.gov/OrderDiscrepancy/v1.0"  schemaLocation="../OrderDiscrepancy.xsd"/>
+
+	<complexType name="DiscrepancyTransactions">
+		<sequence>
+			<element name="zkp" type="discr:ZKP" minOccurs="0"/>
+			<element name="finance305Credit" type="discr:Finance305" minOccurs="0"/>
+			<element name="finance305Debit" type="discr:Finance305" minOccurs="0"/>
+			<element name="reshipment" type="discr:Reshipment" minOccurs="0"/>
+			<element name="materialReturn" type="discr:MaterialReturn" minOccurs="0"/>
+			<element name="zlaCredit" type="discr:ZLA" minOccurs="0"/>
+			<element name="zlaDebit" type="discr:ZLA" minOccurs="0"/>
+			<element name="zsaCredit" type="discr:ZSA" minOccurs="0"/>
+			<element name="zsaDebit" type="discr:ZSA" minOccurs="0"/>
+			<element name="zsaPZ" type="discr:ZSA" minOccurs="0"/>
+			<element name="vendorOffset" type="discr:VendorOffset" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	
+	<simpleType name="TransactionType">
+		<restriction base="string">
+			<enumeration value="ZKP" />
+			<enumeration value="Finance305Credit" />
+			<enumeration value="Finance305Debit" />
+			<enumeration value="Reshipment" />
+			<enumeration value="MaterialReturn" />
+			<enumeration value="ZLACredit" />
+			<enumeration value="ZLADebit" />
+			<enumeration value="ZSACredit" />
+			<enumeration value="ZSADebit" />
+			<enumeration value="ZSAPz" />
+			<enumeration value="VendorOffset" />
+		</restriction>
+	</simpleType>	
+	
+	<complexType name="TransactionResponse">
+		<sequence>
+			<element name="successful" type="boolean"/>
+			<element name="transactionType" type="msg:TransactionType"/>
+			<element name="message" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="code" type="string" minOccurs="0"/>
+						<element name="message" type="string" minOccurs="0"/>
+					</sequence> 
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="TransactionsResponse">
+		<sequence>
+			<element name="allSuccessful" type="boolean"/>
+			<element name="transactionResponse" type="msg:TransactionResponse" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+</schema>

@@ -1,0 +1,20 @@
+# -----------------------------------------------------------------------------
+# Ivy Properties
+# -----------------------------------------------------------------------------
+
+#lib.dir = ${basedir}/lib
+#build.dir = ${basedir}/build
+#classes.dir = ${build.dir}/classes
+#src.dir = ${basedir}/src
+
+ivy.file = ${basedir}/ivy.xml
+my.ivy.dir=${user.home}/.ivy2
+ssh.user=jboss
+ssh.key=id_rsa
+shared.repo.host=fcoh1s-v-soa03d.fas.gsa.gov
+artifactory.host.url=http://${shared.repo.host}:52201
+lm.artifactory.host.url=https://${lm.artifactory.host}
+mail.host=smtp.gsa.gov
+mail.port=25
+mail.to.list=CATechTeam@gsa.gov
+mail.cc.list=jay.kondapalli@gsa.gov

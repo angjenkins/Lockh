@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions name="HostWebServices" targetNamespace="http://webservicesb.fas.gsa.gov/Program/FSS19WSPRG" xmlns:tns="http://webservicesb.fas.gsa.gov/Program/FSS19WSPRG" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="http://webservicesb.fas.gsa.gov/Program/FSS19WSPRG" xmlns:tns="http://webservicesb.fas.gsa.gov/Program/FSS19WSPRG" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="get_recordRequest">
+        <complexType>
+          <sequence>
+            <element name="in_type" type="xsd:string" />
+            <element name="in_data" type="xsd:string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="get_recordResponse">
+        <complexType>
+          <sequence>
+            <element name="mcpElapsed" type="xsd:integer" />
+            <element name="output_rec" type="xsd:string" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="get_recordRequest">
+    <part name="params" element="tns:get_recordRequest" />
+  </message>
+  <message name="get_recordResponse">
+    <part name="params" element="tns:get_recordResponse" />
+  </message>
+  <portType name="ProgramFSS19WSPRGPort">
+    <operation name="get_record">
+      <input message="tns:get_recordRequest" />
+      <output message="tns:get_recordResponse" />
+    </operation>
+  </portType>
+  <binding name="ProgramFSS19WSPRGBinding" type="tns:ProgramFSS19WSPRGPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="get_record">
+      <soap:operation soapAction="Program.FSS19WSPRG.get_record" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="ProgramFSS19WSPRGService">
+    <documentation>Access Program FSS19WSPRG via MGSWeb</documentation>
+    <port name="ProgramFSS19WSPRGPort" binding="tns:ProgramFSS19WSPRGBinding">
+      <soap:address location="http://webservicesb.fas.gsa.gov/HostWebServices/?ProgramFSS19WSPRG" />
+    </port>
+  </service>
+</definitions>

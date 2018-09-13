@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!-- Sample build file used to retrieve eas's sources -->
+<project name="svn-build" basedir="." default="clean">
+
+  <!-- path to the eas libraries. Usually they will be located in ANT_HOME/lib -->
+  <path id="svnant.classpath">
+    <fileset dir="${svn.lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>  
+  
+  <!-- load the svn task -->
+  <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath" />
+  
+  <target name="clean">
+    <delete dir="projects"/>
+  </target>
+ <target name="initTag">
+  	<echo taskname="initTag" message="creating ${svn.tags.url}/${release.project}_${svn.release.tag} Tag" />
+	<svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false" >
+	  <mkdir message="creating ${svn.tags.url}/${release.project}_${svn.release.tag}" url="${svn.tags.url}/${release.project}_${svn.release.tag}" />	
+	</svn>
+ </target>
+ 
+  <target name="initBranch">
+   	<echo taskname="initBranch" message="creating ${svn.branches.url}/${release.branch.tag} Branch" />
+ 	<svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false" >
+ 	  <mkdir message="creating ${svn.branches.url}/${release.branch.tag}" url="${svn.branches.url}/${release.branch.tag}" />	
+ 	</svn>
+ </target>
+	
+ <target name="moveTag">
+  	<echo taskname="moveTag" message="${project.name}" />
+  	<sleep seconds="1" />
+	<svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false" >
+	  <move message="moving ${project.name}_${svn.release.tag} baseline" srcUrl="${svn.tags.url}/${release.project}_${project.name}_${svn.release.tag}"  destUrl="${svn.tags.url}/${release.project}_${svn.release.tag}/${project.name}" />	
+	</svn>
+ </target>	
+  <target name="checkoutLatest">
+  	<echo taskname="checkoutLatest" message="Checking out latest ${project.name}" />
+    <svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false">
+   <export srcUrl="${svn.base.url}/${project.name}" revision="HEAD" destPath="projects/${project.name}" />    	
+    </svn>
+  </target>
+	
+  <target name="tag" >
+ <!-- 	
+    <tstamp>
+      <format property="timestamp" pattern="yyyyMMddHHmm" />
+    </tstamp>
+  	<buildnumber file="${project.name}build.number"/>
+-->  	
+  	<echo taskname="tag" message="creating ${svn.release.tag} baseline for  ${project.name}" />
+	<svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="true" >
+	  <copy message="${project.name}_${svn.release.tag} baseline" srcUrl="${svn.base.url}/${project.name}" revision="HEAD" destUrl="${svn.tags.url}/${release.project}_${svn.release.tag}" />	
+	</svn>	
+  </target>	
+
+  <target name="branch" >
+ <!-- 	
+    <tstamp>
+      <format property="timestamp" pattern="yyyyMMddHHmm" />
+    </tstamp>
+  	<buildnumber file="${project.name}build.number"/>
+-->  	
+  	<echo taskname="branch" message="creating ${release.branch.tag} branch for ${project.name}" />
+	<svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false" >
+	  <copy message="${project.name}_${release.branch.tag} branch" srcUrl="${svn.base.url}/${project.name}" revision="HEAD" destUrl="${svn.branches.url}/${release.branch.tag}" />	
+	</svn>	
+  </target>	
+  
+  <target name="tagBranch" >
+   <!-- 	
+      <tstamp>
+        <format property="timestamp" pattern="yyyyMMddHHmm" />
+      </tstamp>
+    	<buildnumber file="${project.name}build.number"/>
+  -->  	
+    	<echo taskname="tag" message="creating ${svn.release.tag} baseline for ${project.name} from ${release.branch.tag} branch" />
+  	<svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false" >
+  	  <copy message="${project.name}_${svn.release.tag} baseline" srcUrl="${svn.branches.url}/${release.branch.tag}/${project.name}" revision="HEAD" destUrl="${svn.tags.url}/${release.project}_${svn.release.tag}" />	
+  	</svn>	
+  </target>
+
+  <target name="checkoutTag">
+  	<echo taskname="checkoutTag" message="${release.project}_${svn.release.tag}/${project.name}" />
+    <svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false">
+      <export srcUrl="${svn.tags.url}/${release.project}_${svn.release.tag}/${project.name}" revision="HEAD" destPath="projects/${project.name}" />
+    </svn>
+  </target>
+	
+  <target name="checkoutBranch">
+	  	<echo taskname="checkoutBranch" message="${release.branch.tag}/${project.name}" />
+	    <svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false">
+	      <export srcUrl="${svn.branches.url}/${release.branch.tag}/${project.name}" revision="HEAD" destPath="projects/${project.name}" />
+	    </svn>
+</target>	
+
+<target name="deleteTag">
+	<echo taskname="deleteTag" message="${project.name}" />
+	    <svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false">
+	    	 	
+	<delete url="${svn.tags.url}/${release.project}_${svn.release.tag}/${project.name}"
+		 message="deleting ${svn.tags.url}/${release.project}_${svn.release.tag}/${project.name}" />
+
+	    </svn>
+	
+</target>	
+<target name="deleteBranch">
+	<echo taskname="deleteBranch" message="${project.name}" />
+	    <svn username="${svn.user}" password="${svn.passwd}" svnkit="true" failonerror="false">
+	    	 	
+	<delete url="${svn.branches.url}/${release.branch.tag}/${project.name}"
+		 message="deleting ${svn.branches.url}/${release.branch.tag}/${project.name}" />
+
+	    </svn>
+	
+</target>
+</project>
+

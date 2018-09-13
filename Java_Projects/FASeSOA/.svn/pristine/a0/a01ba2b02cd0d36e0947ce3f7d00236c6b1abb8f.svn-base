@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:cstmr="http://fas.gsa.gov/Customer/v1.0">
+	
+	<import	namespace="http://fas.gsa.gov/Customer/v1.0"  schemaLocation="../Customer.xsd"/>
+	
+	<complexType name="CustomerSearchCriteria">
+		<choice>
+			<element name="fullName">
+				<complexType>
+					<sequence>
+						<element name="lastName" type="string" minOccurs="0"/>
+						<element name="firstName" type="string" minOccurs="0"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="aac" type="string"/>
+			<element name="email" type="string"/>
+		</choice>
+	</complexType>
+	
+	<complexType name="ContactList">
+		<sequence>
+			<element name="contact" type="cstmr:Contact" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+</schema>

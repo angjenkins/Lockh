@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://fas.gsa.gov/Faults/v1.0"
+	xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+
+	<complexType name="Fault">
+		<sequence>
+			<element minOccurs="0" name="code" type="string" />
+			<element minOccurs="0" name="message" type="string" />
+		</sequence>
+		<attribute name="oid" type="integer" />
+	</complexType>
+
+	<complexType name="InvalidInputFault">
+		<complexContent>
+			<extension base="flt:Fault">
+				<sequence></sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ServiceFault">
+		<complexContent>
+			<extension base="flt:Fault">
+				<sequence></sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ProcessFault">
+		<complexContent>
+			<extension base="flt:Fault">
+				<sequence></sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+</schema>

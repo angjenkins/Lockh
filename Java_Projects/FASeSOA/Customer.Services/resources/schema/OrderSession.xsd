@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://fas.gsa.gov/OrderSession/v1.0"
+	xmlns:ses="http://fas.gsa.gov/OrderSession/v1.0"
+	xmlns:ord="http://fas.gsa.gov/Order/v1.0"
+	xmlns:vdr="http://fas.gsa.gov/Vendor/v1.0" 
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+
+	<import namespace="http://fas.gsa.gov/OrderDetails/v1.0"/>
+	<import namespace="http://fas.gsa.gov/Global/v1.0"/>
+
+	<simpleType name="OrderSessionIdentifier">
+		<restriction base="string">
+			<length value="15"/>
+		</restriction>
+	</simpleType>
+
+	<complexType name="LineItemListing">
+		<sequence>
+			<element name="orderNumber" type="ord:OrderNumber" />
+			<element name="itemNumber" type="ord:ItemNumber"/>
+			<element name="quantity" type="ord:ItemQuantity" />
+			<element name="price" type="glb:priceType"/>
+			<element name="vendorName" type="string"/>
+			<element name="productName" type="string" />
+			<element name="status" type="string"/>
+			<element name="orderDate" type="dateTime"/>
+			<element name="estShipDate" type="date" />
+			<element name="shipDate" type="date"/>
+		</sequence>	
+	</complexType>
+
+	<complexType name="OrderSession">
+		<sequence>
+			<element name="sessionNumber" type="ses:OrderSessionIdentifier"/>
+			<element name="lineItemList">
+				<complexType>
+					<sequence>
+						<element name="lineItemListing" type="ses:LineItemListing" maxOccurs="unbounded"/>						
+					</sequence>				
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<element name="orderSession" type="ses:OrderSession"/>
+</schema>

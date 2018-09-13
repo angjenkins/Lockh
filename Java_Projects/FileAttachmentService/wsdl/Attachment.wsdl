@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns="http://fas.gsa.gov/services/Attachment/v1.0"
+	xmlns:wsaw="http://www.w3.org/2005/08/addressing"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Attachment"
+	targetNamespace="http://fas.gsa.gov/services/Attachment/v1.0"
+	xmlns:tns="http://fas.gsa.gov/services/Attachment/v1.0"
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+	xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+  
+	<wsdl:types>
+		<xsd:schema xmlns:trn="http://fas.gsa.gov/Transformation/v1.0"
+			targetNamespace="http://fas.gsa.gov/services/Attachment/v1.0"
+			xmlns:flt="http://fas.gsa.gov/Faults/v1.0"
+			xmlns:tns="http://fas.gsa.gov/services/Attachment/v1.0">
+     <xsd:import namespace="http://fas.gsa.gov/Faults/v1.0" />
+    <!--  
+	<xsd:complexType name="Attachment">
+		<xsd:sequence>
+		        <xsd:element name="filename" type="xsd:string" minOccurs="1" />
+				<xsd:element name="data" type="xsd:base64Binary"  minOccurs="1" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Attachments">
+		<xsd:sequence>
+		        <xsd:element name="Attachments" type="tns:Attachment" minOccurs="1" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="attachmentData" type="tns:Attachment"   />
+	<xsd:element name="intResponse" type="xsd:int" />
+	--> 
+	<xsd:complexType name="Attachment">
+		<xsd:sequence>
+		        <xsd:element name="filename" type="xsd:string" minOccurs="1" />
+				<xsd:element name="data" type="xsd:base64Binary"  minOccurs="1" />
+	</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="FileName" type="xsd:string" />
+	<xsd:element name="attachment" type="tns:Attachment" />
+	<xsd:element name="success" type="xsd:boolean" />
+	<xsd:element name="serviceFault"	nillable="true" type="flt:ServiceFault" />
+		</xsd:schema>
+	</wsdl:types>
+
+  <wsdl:message name="AttachmentRequest">
+    <!-- <wsdl:part name="fileName" element="tns:FileName" />  -->
+    <wsdl:part name="attachment" element="tns:attachment" />
+  </wsdl:message>
+  <wsdl:message name="AttachmentResponse">
+		<wsdl:part name="success" element="tns:success"/>
+	</wsdl:message>
+  <wsdl:message name="ServiceFault">
+  	<wsdl:part name="fault" element="tns:serviceFault"/>
+  </wsdl:message>
+  
+  <wsdl:portType name="AttachmentWS">
+    <wsdl:operation name="submitAttachmentData">
+      <wsdl:input message="tns:AttachmentRequest" wsaw:Action="http://fas.gsa.gov/Attachment/submitAttachmentData">
+    </wsdl:input>
+    <wsdl:output message="tns:AttachmentResponse"  /> 
+    <wsdl:fault message="tns:ServiceFault"  name="attachmentFault" /> 
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AttachmentSOAP" type="tns:AttachmentWS">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsaw:UsingAddressing required="true"/>
+    <wsdl:operation name="submitAttachmentData">
+      <wsdl:input>
+      <mime:multipartRelated>
+       <mime:part >
+        <soap:body use="literal"/>
+       </mime:part>
+       <mime:part >
+       <mime:content part="attachment" />
+          </mime:part> 
+        </mime:multipartRelated>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output> 
+      <wsdl:fault name="attachmentFault">
+  			<soap:fault use="literal" name="attachmentFault" />
+  		</wsdl:fault> 
+    </wsdl:operation>
+  </wsdl:binding>
+
+
+	<wsdl:service name="AttachmentService">
+		<wsdl:port binding="tns:AttachmentSOAP" name="AttachmentWS">
+			<soap:address
+				location="http://fcoh1s-v-SOA03d.fas.gsa.gov:8082" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,11 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0">
+	
+	  <include schemaLocation="CustomerMessages.xsd"/>
+    <include schemaLocation="PricingMessages.xsd"/>
+    <include schemaLocation="OrderDiscrepancyMessages.xsd"/>
+    <include schemaLocation="OrderMessages.xsd"/>
+    <include schemaLocation="OrderComplaintMessages.xsd"/>
+    <include schemaLocation="VendorMessages.xsd"/>
+</schema>

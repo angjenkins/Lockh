@@ -1,0 +1,45 @@
+####################################
+# Advantage Database related
+###################################
+advantage.bvdb.db.server = eagu40.fss.gsa.gov
+advantage.bvdb.db.port = 5100
+advantage.bvdb.db.database=bvdb
+advantage.bvdb.db.user = viss_bv_maint
+advantage.bvdb.db.password= pwd12345
+advantage.bvdb.db.jdbc.url = jdbc:sybase:Tds:${advantage.bvdb.db.server}:${advantage.bvdb.db.port}/${advantage.bvdb.db.database}
+
+####################################
+# CSC Database related
+###################################
+csc.db.server = 159.142.46.162
+csc.db.port = 3987
+csc.db.config=(OPENA)CONFIG/VISS
+csc.db.user = m10cstest
+csc.db.password=dbtestpb
+csc.db.jdbc.url = jdbc:opena:${csc.db.server}:${csc.db.port}/${csc.db.user}/${csc.db.password}/${csc.db.config} ON SOFTWARE
+
+####################################
+# OCMS Database related
+###################################
+ocms.db.server = 159.142.46.162
+ocms.db.port = 3987
+ocms.db.config=(OPENA)CONFIG/CIS/DEV
+ocms.db.user = m10cstest
+ocms.db.password=dbtestpb
+ocms.db.jdbc.url = jdbc:opena:${ocms.db.server}:${ocms.db.port}/${ocms.db.user}/${ocms.db.password}/${ocms.db.config} ON SOFTWARE
+
+
+####################################
+# VISS Database related
+###################################
+viss.db.server = eagu35.fss.gsa.gov
+viss.db.port = 5610
+viss.db.database=viss
+viss.db.user = vissowner
+viss.db.password=vo123456
+viss.db.jdbc.url = jdbc:sybase:Tds:${viss.db.server}:${viss.db.port}/${viss.db.database}
+
+####################################
+# FSS19 Service related
+###################################
+fss19.service.url = http://webservicesb.fas.gsa.gov/HostWebServices/?ProgramFSS19WSPRG

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <!DOCTYPE project [
+        <!ENTITY junitTest SYSTEM "junitTest.xml">
+]> -->
+<project name="common" xmlns:ivy="antlib:org.apache.ivy.ant" basedir="."> 
+        
+	<dirname property="common.basedir" file="${ant.file.common}" />
+	<property file="${common.basedir}/local.release.properties" />
+	<property file="${common.basedir}/release.properties" />
+	<ivy:configure file="${common.basedir}/settings/ivysettings.xml" />
+	<property name="environment" value="local" />
+	<property file="${common.basedir}/${environment}.env.properties" />
+	 <condition property="isWindows">
+	                    <os family="windows" />
+	 </condition>
+	
+	 <condition property="isLinux">
+	                    <os family="unix" />
+	 </condition>
+	
+	<!-- 
+	&junitTest;
+	================================= 
+          taskdefs              
+         ================================= -->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${svn.lib.dir}/ant/ant-contrib-0.6.jar" />
+			<pathelement location="${svn.lib.dir}/ant/activation-1.1.jar" />
+			<pathelement location="${svn.lib.dir}/ant/mail-1.4.jar" />
+		</classpath>
+	</taskdef>
+
+
+	<!-- ================================= 
+          target: resolve              
+         ================================= -->
+	<target name="resolve"  description="--> resolve and retrieve dependencies with ivy">
+		<echo message="${base.dir}" />
+		<!-- the call to resolve is not mandatory, retrieve makes an implicit call if we don't -->
+		<ivy:resolve />
+		<ivy:retrieve />
+	</target>
+
+	<!-- ================================= 
+          target: report              
+         ================================= -->
+	<target name="report" depends="resolve" description="--> generates a report of dependencies">
+		<ivy:report todir="${build.dir}" />
+	</target>
+
+	<target name="ivy-new-version" unless="ivy.new.revision">
+		<!-- default module version prefix value -->
+		<property name="module.version.prefix" value="${module.version.target}-dev-b" />
+
+		<!-- asks to ivy an available version number -->
+		<ivy:buildnumber organisation="${ivy.organisation}" module="${ivy.module}" revision="${module.version.prefix}" defaultBuildNumber="1" revSep="" />
+	</target>
+
+	<target name="local-version">
+		<tstamp>
+			<format property="now" pattern="yyyyMMddHHmmss" />
+		</tstamp>
+		<property name="ivy.new.revision" value="${module.version.target}-local-${now}" />
+	</target>
+
+	<target name="version" depends="ivy-new-version">
+		<!-- create version file in classpath for later inclusion in jar -->
+		<mkdir dir="${classes.dir}" />
+		<echo message="version=${ivy.new.revision}" file="${classes.dir}/${ant.project.name}.properties" append="false" />
+
+		<!-- load generated version properties file -->
+		<property file="${classes.dir}/${ant.project.name}.properties" />
+	</target>
+
+	<target name="clean-cache" description="--> clean the cache">
+		<ivy:cleancache />
+	</target>
+	<target name="clean-ivy" description="--> clean the ivy.xml from build">
+		<delete file="${basedir}/build/ivy.xml" />
+	</target>
+	<!-- =================================  depends="resolve"
+          target: Publish to Enterprise Repository             
+         ================================= -->
+	<target name="publish" depends="clean-ivy,resolve" description="--> publish this project in the shared ivy repository">
+		<ivy:buildnumber organisation="gov.gsa.fas" module="${ivy.module}" revision="${publish.branch}${release.tag}" />
+		<echo message="project ${ivy.module} being released to ${release.status} with version ${ivy.new.revision}" />
+		
+		<ivy:publish resolver="publish_artifactory" pubrevision="${ivy.new.revision}" overwrite="true" >
+			<artifacts pattern="${basedir}/build/[artifact].[ext]" />
+		</ivy:publish>
+		<!--
+		<antcall target="publish_to_lm" />
+			-->
+		<antcall target="sendNote" >
+			<param name="subject" value="Published ${ivy.module}  ${ivy.new.revision}" />
+			<param name="message" value="The ${ivy.module} is published to ${publish.branch} branch  with version ${ivy.new.revision}" />
+			<param name="attachment" value="release_notes.txt" />
+		</antcall>
+	
+		<!--<mailit />-->
+	</target>
+	<target name="publish_to_lm" if="isWindows" >
+	<ivy:publish resolver="publish_lm_artifactory" pubrevision="${ivy.new.revision}" overwrite="true"  >
+						<artifacts pattern="${basedir}/build/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+	
+	<target name="sendNote" depends="wmail" if="isLinux">
+			<announce subject="${subject}" message="${message}"  /> 
+		</target>
+		<target name="wmail" if="isWindows" >
+			<mailit subject="${subject}" message="${message}" attachment="${attachment}" /> 
+	</target>
+	<!-- = = = = = = = = = = = = = = = = =
+          macrodef: E-mail Publish news  to list         
+         = = = = = = = = = = = = = = = = = 
+         password="${mail.user.password}" ssl="yes" for secure
+         -->
+	<macrodef name="announce">
+		        <attribute name="message" default="The ${ivy.module} is published to ${publish.branch} branch with version ${ivy.new.revision}" />
+		        <attribute name="attachment" default="release_notes.txt" />
+		        <attribute name="subject" default="Published ${ivy.module}  ${ivy.new.revision}" />
+		       <attribute name="mail.cc.list" default="${mail.cc.list}" />
+		        <sequential>
+		                <property environment="env"/>
+		                <mail mailhost="${mail.host}" mailport="${mail.port}" subject="@{subject}"
+		                        tolist="${mail.to.list}" cclist="@{mail.cc.list}"
+		                        message="@{message}"
+		                  charset="utf-8">
+		                  <from address="${user.name}@${env.HOSTNAME}"  />
+		                          <attachments>
+		                            <fileset dir="${basedir}">
+		                              <include name="@{attachment}"/>
+		                            </fileset>
+		                          </attachments>
+		                </mail>
+		        </sequential>
+	</macrodef>
+	
+
+	
+	
+	<!-- ================================= 
+          target: publish-notes          
+         ================================= -->
+	<target name="publish-notes" description="--> Publish release_notes for published one" >
+		<antcall target="sendNote">
+			<param name="subject" value="Sending release notes for ${ant.project.name} " />
+			<param name="attachment" value="release_notes.txt" />
+			<param name="message" value="Please update your ${ant.project.name} project." />
+		</antcall>
+	</target>
+	
+	<!-- ================================= 
+          target: publish-checkList          
+         ================================= -->
+	<target name="publish-checklist" description="--> Publish release_checklist for published one" >
+		<antcall target="sendNote">
+			<param name="subject" value="EAS Release ${release.tag} checklist" />
+			<param name="attachment" value="release_checklist.txt" />
+			<param name="message" value="Please apply it for ${release.tag} release." />
+		</antcall>
+	</target>
+	
+	<!-- ================================= 
+          target: Configure (Replaces tokens under resiurce)            
+         ================================= -->
+	<target name="configure">
+		<copy tofile="${common.basedir}/filtersfile" overwrite="true" failonerror="false" file="${common.basedir}/${environment}.env.properties">
+			<filterset begintoken="$${" endToken="}" filtersfile="${common.basedir}/${environment}.env.properties" />
+		</copy>
+		<copy todir="${basedir}/${resource.dir}" overwrite="true" failonerror="false" filtering="yes">
+			<fileset dir="${basedir}/${resource.dir}" />
+			<globmapper from="*.tmpl" to="*" />
+			<filterset filtersfile="${common.basedir}/filtersfile" />
+		</copy>
+		<delete file="${common.basedir}/filtersfile" />
+	</target>
+	<!-- ================================= 
+          target: Prints the next revision for module            
+         ================================= -->	
+	<target name="findNext">
+		<ivy:buildnumber organisation="gov.gsa.fas" module="${ant.project.name}" revision="${publish.branch}${release.tag}" resolver="local-artifactory" />
+		<echo message="Next version for ${ant.project.name}: ${ivy.new.revision}" />
+	</target>	
+	<!-- ================================= 
+          target: Prints the latest revision for all modules           
+         ================================= -->		
+	<target name="findLatest">
+		<for list="${release.modules}" param="module" >
+	  		<sequential>
+	    			<ivy:findrevision organisation="gov.gsa.fas" module="@{module}" revision="latest.${release.status}" />
+		<echo message="@{module} : ${ivy.revision}" />
+	 		</sequential>
+	 	</for>
+	</target>
+	<!-- ================================= 
+          target: remote-copy             
+         ================================= -->
+	<target name="rcp" description="--> copies file(s) to remote host">
+		<scp trust="true" todir="${ssh.user}@${remote.host}:${todir}" keyfile="${user.home}/.ssh/${ssh.key}" passphrase="">
+			<fileset dir="${srcdir}" includes="${file}" />
+		</scp>
+	</target>
+	<!-- ================================= 
+          target: remote-sh            
+         ================================= -->
+	<target name="rsh" description="--> Exceutes command on remote host">
+		<sshexec   host="${remote.host}" trust="true" username="${ssh.user}" keyfile="${user.home}/.ssh/${ssh.key}" passphrase="" command="${command}" />
+	</target>
+<!-- ========================================
+	target : mailit (utility to send e-mail to team)
+	====================================-->
+	    <macrodef name="mailit">
+        <attribute name="message" default="The ${ivy.module} is published to ${publish.branch} branch with version ${ivy.new.revision}" />
+    	<attribute name="attachment" default="release_notes.txt" />
+    	<attribute name="subject" default="Published ${ivy.module}  ${ivy.new.revision}" />
+    	<sequential>
+    		<antcall target="rcp">
+    			<param name="remote.host" value="${shared.repo.host}" />
+    			<param name="ssh.user" value="ivyuser" />
+    			<param name="ssh.key" value="ivyuser_id_rsa" />
+    			<param name="file" value="@{attachment}" />
+    			<param name="srcdir" value="${basedir}" />
+    			<param name="todir" value="." />
+    		</antcall>	
+    		<antcall target="rsh">
+    					<param name="ssh.user" value="ivyuser" />
+    			    	        <param name="ssh.key" value="ivyuser_id_rsa" />
+    					<param name="remote.host" value="${shared.repo.host}" />
+    					<param name="command" value="echo set realname=${user.name} > .muttrc;echo '@{message}' |mutt -s '@{subject}' -a @{attachment} -c ${mail.cc.list} ${mail.to.list}" />
+    		</antcall>
+        </sequential>
+    </macrodef>	
+	<!-- ========================================
+			target : client.framework.deploy (common deploy to All servers)
+			====================================-->
+	<target name="client.framework.deploy" >
+		<description>deploy	- will deploy services properties to All EAS Servers</description>
+	   
+		<for list="${jboss.app.servers}" param="server">
+			 <sequential>
+			    <echo>>>>>>>deploying ${ant.project.name} project to JBoss EAP @{server} on ${jboss.@{server}.host}</echo>
+			 	<if>
+			 		<equals arg1="${jboss.@{server}.host}" arg2="${build.host}"   trim="true" />
+			 	 <then>
+			 	 	<echo>####Local deployment###</echo>
+					 <antcall target="local-deploy" >
+					 	<param name="jboss.host" value="${jboss.@{server}.host}"/>
+					 </antcall>
+			 	 </then>
+			 	 <else>
+			 	 	<echo>####Remote deployment###</echo>
+					 <antcall target="remote-deploy">
+					 	<param name="jboss.host" value="${jboss.@{server}.host}"/>
+					 	<param name="environment.property.path" value="${staging.dir}${environment.property.path}"/>
+					 </antcall>	
+			 	 </else>
+			 	</if>
+			 </sequential>
+		</for>	
+		<for list="${sbm.servers}" param="server">
+			 <sequential>
+			    <echo>>>>>>>deploying ${ant.project.name} project to BPMS server on  @{server} </echo>
+			 	<if>
+			 		<equals arg1="@{server}" arg2="${build.host}"   trim="true" />
+			 	 <then>
+			 	 	<echo>####Local deployment###</echo>
+					 <antcall target="local-deploy" >
+					 	<param name="jboss.host" value="@{server}"/>
+					 </antcall>
+			 	 </then>
+			 	 <else>
+			 	 	<echo>####Remote deployment###</echo>
+					 <antcall target="remote-deploy">
+					 	<param name="jboss.host" value="@{server}"/>
+					 	<param name="environment.property.path" value="${staging.dir}${environment.property.path}"/>
+					 </antcall>	
+			 	 </else>
+			 	</if>
+			 </sequential>
+		</for>	
+	</target>		
+	<!-- ========================================
+			target : app.deploy (common deploy to EAP servers)
+			====================================-->		
+	<target name="app.deploy" >
+		<description>deploy	- will deploy code to All JBoss EAP Servers</description>
+	   
+		<for list="${jboss.app.servers}" param="server">
+			 <sequential>
+			    <echo>>>>>>>deploying ${ant.project.name} project to JBoss EAP @{server} on ${jboss.@{server}.host}</echo>
+			 	<if>
+			 		<equals arg1="${jboss.@{server}.host}" arg2="${build.host}"   trim="true" />
+			 	 <then>
+			 	 	<echo>####Local deployment###</echo>
+					 <antcall target="local-deploy" >
+					 	<param name="isLocal" value="true"/>
+					 	<param name="jboss.app.host" value="${jboss.@{server}.host}"/>
+					 	<param name="jboss.host" value="${jboss.@{server}.host}"/>
+					 	<param name="jboss.app.persistence.jndi.url" value="${jboss.@{server}.persistence.jndi.url}"/>
+					    <param name="jboss.app.server.home" value="${jboss.@{server}.server.home}"/>
+					 	<param name="jboss.app.server.url" value="${jboss.@{server}.server.url}"/>
+					 	<param name="jboss.app.server.name" value="${jboss.@{server}.server.name}"/>
+					 	<param name="jboss.app.deployment.home" value="${jboss.@{server}.deployment.home}"/>
+					 </antcall>
+			 	 </then>
+			 	 <else>
+			 	 	<echo>####Remote deployment###</echo>
+			 	 	<antcall target="remote-undeploy">
+					    <param name="jboss.app.server.home" value="${jboss.@{server}.server.home}"/>
+					 	<param name="jboss.app.server.name" value="${jboss.@{server}.server.name}"/>
+					 	<param name="jboss.app.deployment.home" value="${jboss.@{server}.deployment.home}"/>
+					 	<param name="environment.property.path" value="${environment.property.path}"/>
+			 	 	</antcall>	
+					 <antcall target="remote-deploy">
+					 	<param name="jboss.app.host" value="${jboss.@{server}.host}"/>
+					 	<param name="jboss.host" value="${jboss.@{server}.host}"/>
+					 	<param name="jboss.app.persistence.jndi.url" value="${jboss.@{server}.persistence.jndi.url}"/>
+					    <param name="jboss.app.server.home" value="${staging.dir}${jboss.@{server}.server.home}"/>
+					 	<param name="jboss.app.server.url" value="${jboss.@{server}.server.url}"/>
+					 	<param name="jboss.app.server.name" value="${jboss.@{server}.server.name}"/>
+					 	<param name="jboss.app.deployment.home" value="${staging.dir}${jboss.@{server}.deployment.home}"/>
+					 	<param name="environment.property.path" value="${staging.dir}${environment.property.path}"/>
+					 </antcall>	
+			 	 </else>
+			 	</if>
+			 </sequential>
+		</for>	
+	</target>	
+<!-- ========================================
+		target : esb.deploy (common deploy to ESB servers)
+		====================================-->	
+	<target name="esb.deploy" >
+		<description>deploy	- will deploy code to All JBoss ESB Servers</description>
+	   
+		<for list="${jboss.esb.servers}" param="server">
+			 <sequential>
+			    <echo>>>>>>>deploying ${ant.project.name} project to @{server} on ${jboss.@{server}.host}</echo>
+			 	<if>
+			 		<equals arg1="${jboss.@{server}.host}" arg2="${build.host}"   trim="true" />
+			 	 <then>
+			 	 	<echo>####Local deployment###</echo>
+					 <antcall target="local-deploy" >
+					 	<param name="jboss.esb.server.jbrport1" value="${jboss.@{server}.server.jbrport1}"/>
+					 	<param name="jboss.esb.server.jbrport2" value="${jboss.@{server}.server.jbrport2}"/>
+					    <param name="jboss.host" value="${jboss.@{server}.host}"/>
+					 	 <param name="jboss.esb.server.name" value="${jboss.@{server}.server.name}"/>
+					 	<param name="jboss.esb.server.home" value="${jboss.@{server}.server.home}"/>
+					 	<param name="jboss.esb.deployment.home" value="${jboss.@{server}.deployment.home}"/>
+					 	<param name="esb.home.dir" value="${jboss.@{server}.server.home}/server/${jboss.@{server}.server.name}"/>
+					 	<param name="deploy.dir" value="${jboss.@{server}.deployment.home}/deploy"/>
+					 </antcall>
+			 	 </then>
+			 	 <else>
+			 	 	<echo>####Remote deployment###</echo>
+			 	 	<antcall target="remote-undeploy">
+ 						    <param name="jboss.esb.server.jbrport1" value="${jboss.@{server}.server.jbrport1}"/>
+ 						    <param name="jboss.esb.server.jbrport2" value="${jboss.@{server}.server.jbrport2}"/>					 	
+ 						 	<param name="jboss.host" value="${jboss.@{server}.host}"/>
+			 	 			<param name="jboss.esb.server.name" value="${jboss.@{server}.server.name}"/>
+			 	 			<param name="jboss.esb.server.home" value="${jboss.@{server}.server.home}"/>
+ 						    <param name="jboss.esb.deployment.home" value="${jboss.@{server}.deployment.home}"/>
+ 						    <param name="esb.home.dir" value="${jboss.@{server}.server.home}/server/${jboss.@{server}.server.name}"/>
+ 						 	<param name="deploy.dir" value="${jboss.@{server}.deployment.home}/deploy"/>
+			 	 	</antcall>	
+					 <antcall target="remote-deploy">
+					    <param name="jboss.esb.server.jbrport1" value="${jboss.@{server}.server.jbrport1}"/>
+					    <param name="jboss.esb.server.jbrport2" value="${jboss.@{server}.server.jbrport2}"/>					 	
+					 	<param name="jboss.host" value="${jboss.@{server}.host}"/>
+					 	<param name="jboss.esb.server.name" value="${jboss.@{server}.server.name}"/>
+					 	<param name="jboss.esb.server.home" value="${staging.dir}${jboss.@{server}.server.home}"/>
+					    <param name="jboss.esb.deployment.home" value="${staging.dir}${jboss.@{server}.deployment.home}"/>
+					    <param name="esb.home.dir" value="${staging.dir}${jboss.@{server}.server.home}/server/${jboss.@{server}.server.name}"/>
+					 	<param name="deploy.dir" value="${staging.dir}${jboss.@{server}.deployment.home}/deploy"/>
+					 	<param name="environment.property.path" value="${staging.dir}${environment.property.path}"/>
+					 </antcall>	
+			 	 </else>
+			 	</if>
+			 </sequential>
+		</for>	
+	</target>
+	<target name="show.esb.properties"  >
+		<echo>${jboss.host}</echo>	
+		<echo>${jboss.esb.server.jbrport1}</echo>
+		<echo>${jboss.esb.server.jbrport2}</echo>
+		<echo>${jboss.esb.deployment.home}</echo>
+		<echo>${esb.home.dir}</echo>
+		<echo>${deploy.dir}</echo>	
+	</target>		
+
+ </project> 

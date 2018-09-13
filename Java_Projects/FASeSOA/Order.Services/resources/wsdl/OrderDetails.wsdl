@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:os="http://fas.gsa.gov/services/Order/v1.0" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="OrderDetails"
+	targetNamespace="http://fas.gsa.gov/services/Order/v1.0"
+	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0">
+	
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://fas.gsa.gov/services/Order/v1.0" xmlns:ses="http://fas.gsa.gov/OrderSession/v1.0"
+			xmlns:ord="http://fas.gsa.gov/Order/v1.0" 
+			xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+			xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+			<xsd:import namespace="http://fas.gsa.gov/OrderSession/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/Order/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/Faults/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/services/Messages/v1.0" />
+
+			<xsd:element name="GetOrderDetailsRequest">
+				<xsd:complexType>
+					<xsd:choice>
+						<xsd:element name="orderNumber" type="ord:OrderNumber" />
+						<xsd:element name="gecoNumber" type="ord:GecoOrderNumber" />
+						<xsd:element name="ggsSessionNumber" type="ord:GgsSessionNumber"/>
+					</xsd:choice>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="GetOrderDetailsResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Order" minOccurs="0" type="ord:Order" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="GetOrderSessionRequest">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="orderSessionIdentifier" type="ses:OrderSessionIdentifier" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="GetOrderSessionResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="OrderSession" minOccurs="0" type="ses:OrderSession" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="GetPODetailsRequest" type="msg:CscPORequest"/>
+			<xsd:element name="GetPODetailsResponse" type="msg:CscPOResponse"/>
+			<xsd:element name="CancelOrderRequest" type="msg:CancelOrderRequest"/>
+			<xsd:element name="CancelOrderResponse" type="xsd:boolean"/>			
+			<xsd:element name="serviceFault" type="flt:ServiceFault"/>
+
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="GetOrderDetailsRequest">
+		<wsdl:part element="os:GetOrderDetailsRequest" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="GetOrderDetailsResponse">
+		<wsdl:part element="os:GetOrderDetailsResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="GetOrderSessionRequest">
+		<wsdl:part element="os:GetOrderSessionRequest" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="GetOrderSessionResponse">
+		<wsdl:part element="os:GetOrderSessionResponse" name="parameters" />
+	</wsdl:message>
+	
+	<wsdl:message name="CancelOrderRequest">
+		<wsdl:part element="os:CancelOrderRequest" name="orderItem" />
+	</wsdl:message>
+	<wsdl:message name="CancelOrderResponse">
+		<wsdl:part element="os:CancelOrderResponse" name="isCancelled" />
+	</wsdl:message>	
+	
+	<wsdl:message name="GetPODetailsRequest">
+		<wsdl:part element="os:GetPODetailsRequest" name="poDetailsRequest" />
+	</wsdl:message>
+	<wsdl:message name="GetPODetailsResponse">
+		<wsdl:part element="os:GetPODetailsResponse" name="poDetailsResponse" />
+	</wsdl:message>		
+	
+	<wsdl:message name="ServiceFault">
+		<wsdl:part name="parameters" element="os:serviceFault"/>
+	</wsdl:message>
+	
+	<wsdl:portType name="OrderDetails">
+		<wsdl:operation name="GetOrderDetails">
+			<wsdl:input message="os:GetOrderDetailsRequest" />
+			<wsdl:output message="os:GetOrderDetailsResponse" />
+			<wsdl:fault name="getOrderDetailsFault" message="os:ServiceFault" />
+		</wsdl:operation>
+		<wsdl:operation name="GetOrderSession">
+			<wsdl:input message="os:GetOrderSessionRequest" />
+			<wsdl:output message="os:GetOrderSessionResponse" />
+			<wsdl:fault name="getOrderSessionFault" message="os:ServiceFault" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="cancelOrder">
+			<wsdl:input message="os:CancelOrderRequest" />
+			<wsdl:output message="os:CancelOrderResponse" />
+			<wsdl:fault name="cancelOrderFault" message="os:ServiceFault" />
+		</wsdl:operation>	
+		
+		<wsdl:operation name="getPODetails">
+			<wsdl:input message="os:GetPODetailsRequest" />
+			<wsdl:output message="os:GetPODetailsResponse" />
+			<wsdl:fault name="getPODetailsFault" message="os:ServiceFault" />
+		</wsdl:operation>					
+	</wsdl:portType>
+	
+	<wsdl:binding name="OrderDetailsWSBinding" type="os:OrderDetails">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="GetOrderDetails">
+			<soap:operation soapAction="http://fas.gsa.gov/services/Order/v1.0/GetOrder" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+  		<wsdl:fault name="getOrderDetailsFault">
+  			<soap:fault use="literal" name="getOrderDetailsFault" />
+  		</wsdl:fault>  			
+		</wsdl:operation>
+		<wsdl:operation name="GetOrderSession">
+			<soap:operation soapAction="http://fas.gsa.gov/services/Order/v1.0/GetOrderSession" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+  		<wsdl:fault name="getOrderSessionFault">
+  			<soap:fault use="literal" name="getOrderSessionFault" />
+  		</wsdl:fault>  				
+		</wsdl:operation>
+		<wsdl:operation name="cancelOrder">
+			<soap:operation soapAction="http://fas.gsa.gov/services/Order/v1.0/CancelOrder" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+  		<wsdl:fault name="cancelOrderFault">
+  			<soap:fault use="literal" name="cancelOrderFault" />
+  		</wsdl:fault>  				
+		</wsdl:operation>
+		<wsdl:operation name="getPODetails">
+			<soap:operation soapAction="http://fas.gsa.gov/services/Order/v1.0/getPODetails" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+  			<wsdl:fault name="getPODetailsFault">
+  				<soap:fault use="literal" name="getPODetailsFault" />
+  			</wsdl:fault>  				
+		</wsdl:operation>					
+	</wsdl:binding>
+	<wsdl:service name="OrderDetails">
+		<wsdl:port name="OrderDetailsPort" binding="os:OrderDetailsWSBinding">
+			<soap:address location="http://www.example.org/" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE datasources
+    PUBLIC "-//JBoss//DTD JBOSS JCA Config 1.5//EN"
+    "http://www.jboss.org/j2ee/dtd/jboss-ds_5_1.dtd">
+    
+<datasources>
+ <local-tx-datasource>
+      <jndi-name>VISS-CSC-DS</jndi-name>
+      <connection-url>${csc.db.jdbc.url}</connection-url>
+      <driver-class>com.asgardsw.OpenA.OpenADriver</driver-class>
+      <user-name>${csc.db.user}</user-name>
+      <password>${csc.db.password}</password>
+      <min-pool-size>2</min-pool-size>
+      <max-pool-size>10</max-pool-size>
+      <idle-timeout-minutes>0</idle-timeout-minutes>
+      <connection-property name="autoReconnect">true</connection-property>
+ </local-tx-datasource>
+ <local-tx-datasource>
+      <jndi-name>VISS-OCMS-DS</jndi-name>
+      <connection-url>${ocms.db.jdbc.url}</connection-url>
+      <driver-class>com.asgardsw.OpenA.OpenADriver</driver-class>
+      <user-name>${ocms.db.user}</user-name>
+      <password>${ocms.db.password}</password>
+      <min-pool-size>2</min-pool-size>
+      <max-pool-size>10</max-pool-size>
+      <idle-timeout-minutes>0</idle-timeout-minutes>
+      <connection-property name="autoReconnect">true</connection-property>      
+ </local-tx-datasource> 
+ <local-tx-datasource>
+      <jndi-name>VISS-BVDB-DS</jndi-name>
+      <connection-url>${advantage.bvdb.db.jdbc.url}</connection-url>
+      <driver-class>com.sybase.jdbc3.jdbc.SybDriver</driver-class>
+      <user-name>${advantage.bvdb.db.user}</user-name>
+      <password>${advantage.bvdb.db.password}</password> 
+      <min-pool-size>2</min-pool-size>
+      <max-pool-size>10</max-pool-size>
+      <idle-timeout-minutes>0</idle-timeout-minutes>
+      <connection-property name="autoReconnect">true</connection-property>         
+ </local-tx-datasource>
+ <local-tx-datasource>
+      <jndi-name>VISS-DS</jndi-name>
+      <connection-url>${viss.db.jdbc.url}</connection-url>
+      <driver-class>com.sybase.jdbc3.jdbc.SybDriver</driver-class>
+      <user-name>${viss.db.user}</user-name>
+      <password>${viss.db.password}</password> 
+      <min-pool-size>2</min-pool-size>
+      <max-pool-size>10</max-pool-size>
+      <idle-timeout-minutes>0</idle-timeout-minutes>
+      <connection-property name="autoReconnect">true</connection-property>         
+ </local-tx-datasource> 
+</datasources>
+
+

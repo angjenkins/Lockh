@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="." default="build" name="FPDSAtomFeed.service">
+
+	
+	<property name="build.src.generated" value="${basedir}/src/generated" />
+	<property name="build.home" value="build" />
+	<property name="build.classes.home" value="${build.home}/classes" />
+	<property name="deploy.dir" location="${environment.property.path}" />
+	<property name="lib.dir" value="lib" />
+	<property name="jbossws.lib" value="lib" />
+	 <property name="setter.lib" value="lib" />
+	<property name="dist.dir" value="dist" />
+	<property name="schema.dir" value="schema" />
+	<property name="jboss.app.deployment.home" value="/jboss-eap-5.1/jboss-as/server/cpfarms" />
+	
+	
+<!--	 <property name="junit.test.files" value="**/WorkingOfferUpdateWSImplTest.java,**/WorkingOfferAccessWSImplTest.java" /> --> 
+
+<!--	 <property name="junit.test.files" value="**/*Test.java" /> 
+		 <property name="services" value="common,contract,shared" /> -->
+	<path id="classpath">
+		<pathelement location="${java.home}/lib/tools.jar" />
+		<fileset dir="lib" includes="*.jar" />
+		<pathelement path="${build.home}/classes" />
+	</path>
+
+	<path id="jbossws.classpath">
+		<pathelement location="${java.home}/lib/tools.jar" />
+		<fileset dir="${jbossws.lib}" includes="*.jar" />
+		<fileset dir="lib" includes="*.jar" />
+	</path>
+	<taskdef name="wsconsume" classname="org.jboss.wsf.spi.tools.ant.WSConsumeTask">
+		<classpath refid="jbossws.classpath" />
+	</taskdef>
+	
+
+	
+	
+	
+
+	<target name="wsdl2java" >
+
+			<wsconsume catalog="catalog.xml"  verbose="true" sourcedestdir="${build.src.generated}/" keep="true" 
+					   destdir="${build.classes.home}" wsdl="${basedir}/${wsdl.file}" extension="true" >
+			<binding dir="${basedir}" includes="*.xjb" />
+		</wsconsume>
+	</target>
+
+	<target name="wsdlurl2java" >
+
+			<wsconsume catalog="catalog.xml"  verbose="true" sourcedestdir="${build.src.generated}/" keep="true" 
+					   destdir="${build.classes.home}" wsdl="${basedir}/${wsdl.file}" extension="true" >
+			
+		</wsconsume>
+	</target>
+	
+	
+	
+	<target name="generatexxx" >
+		<!-- Following services related to Contract domain only -->
+		<antcall target="wsdl2java">			  	
+				<param name="wsdl.file" value="wsdl/FPDSAtomFeedAccess.wsdl"/>
+		</antcall> 
+	
+		<!-- Removing Domain related classes and keep only services related classes -->
+		<!-- The Below always should be at the end DO NOT MOVE IT 
+		<antcall target="delete-extras" /> -->
+	</target>
+	
+
+	
+	<target name="delete-extras"  >
+	<delete includeEmptyDirs="true"  dir="${build.src.generated}" excludes="
+				gov/gsa/fas/bpms/**/*.java,
+				gov/gsa/fas/services/offer/*/**.java,
+			    gov/gsa/fas/services/pricing/*/**.java,
+			    gov/gsa/fas/services/mockservices/*/**.java,
+				gov/gsa/fas/services/transaction/*/**.java,
+				gov/gsa/fas/services/contract/*/**.java,
+				gov/gsa/fas/services/shared/*/**.java,
+				gov/gsa/fas/fssonline/eas/v1/**.java,
+		    	fssonline/**.java" />
+	
+	</target>
+	<target name="compile"  depends="compile-generated" >
+			<javac destdir="${build.classes.home}" debug="on" srcdir="src/impl"
+				includes="**/*">
+				<classpath refid="classpath" />
+			</javac>
+	</target>	
+	
+	
+	<target name="compile-generated" >
+	        <delete dir="${build.classes.home}" includeEmptyDirs="true" >
+			      		<include name="**/*" />
+		</delete>
+		<javac destdir="${build.classes.home}" debug="on" srcdir="${build.src.generated}"
+			includes="**/*">
+			<classpath refid="classpath" />
+		</javac>		
+	</target>
+	
+	<target name="package" >		
+		<jar jarfile="${build.home}/${ant.project.name}.jar">
+			<fileset dir="${build.classes.home}" >
+				<include name="**/fpdsatomfeedservice/**" />
+				<include name="**/fpdsatomfeed/**" />
+				<include name="**/fpdsng/**" />
+			</fileset>
+			<filelist dir="resources" >
+				<file name="jndi.properties" />
+			</filelist>
+		</jar>	
+			
+	</target>
+
+		
+	
+				
+	<target name="package-ear" >
+		<foreach list="${services}" target="package-domain" 
+		param="domain.name" inheritall="true" />				
+		<jar jarfile="${build.home}/${ant.project.name}.wsdls.jar">
+				<fileset dir="${basedir}" includes="**/*.wsdl" />
+		</jar>	
+		<move tofile="${lib.dir}/common.services.util.jar" file="${build.home}/common.services.jar" overwrite="true"/>
+		  <ear destfile="${build.home}/${ant.project.name}.ear" appxml="resources/v1/application.xml" >
+	        <zipfileset dir="${lib.dir}" prefix="lib">
+		            <include name="persistence.client-*.jar"/>  
+	          	    <include name="persistence.services.client-*.jar"/> 
+	        		<include name="eas.common-*.jar"/>	   
+	        	    <include name="rules.framework-*.jar"/>	
+				    <include name="slf4j*.jar"/>
+	        		<include name="mockServices*.jar"/>
+	        		<include name="master_service*.jar"/>	        	        	
+	        	    <include name="external.services.client.jar"/>
+	        		<include name="cms.services.client-*.jar"/>
+	        	    <include name="common.services.util.jar"/>
+	        		<include name="jxl*.jar"/>
+	        </zipfileset>	
+		  	<fileset dir="resources/v1" includes="gsa_advantage_mpc.xml"/>
+		  	<fileset dir="resources" includes="contextLoader.properties"/>
+		  	<fileset dir="resources" 	includes="ExcelMappingServices.properties"/>
+		  	<fileset dir="${build.home}" includes="*.services.jar"/>
+		  	<fileset dir="resources/v1" includes="jaxws-handlers.xml"/>
+		  </ear>
+		
+	</target>
+	
+
+	<target name="deploy" >	
+	
+		<copy 
+			todir="${jboss.app.deployment.home}/deploy">
+		    <fileset dir="${build.home}">
+		      <include name="${ant.project.name}*.jar"/>
+		    </fileset>
+	    </copy>
+		
+		
+	</target>
+	
+	<target name="undeploy" >
+		<delete dir="${jboss.app.deployment.home}/deploy" includes="client.framework*.jar" />
+		<delete dir="${jboss.app.server.home}/server/${jboss.app.server.name}/deploy" includes="client.framework*.jar"  deleteonexit="true" />
+		<delete dir="${jboss.app.deployment.home}/lib" includes="domain.objects*.jar" deleteonexit="true" />
+		<delete dir="${jboss.app.server.home}/server/${jboss.app.server.name}/lib" includes="domain.objects*.jar"  deleteonexit="true" />
+	</target>
+	<target name="build" depends="compile,package" />
+	
+	<target name="build_wo_generate" depends="compile,package"/>
+	
+	
+	<target name="build_client" depends="compile,package">
+	</target>	
+	
+	
+	
+
+	<target name="clean-srcgenerated">
+	<delete dir="${build.src.generated}" includeEmptyDirs="true" />
+		
+	</target>	
+	<target name="clean">	
+		
+		<delete dir="${build.home}" includeEmptyDirs="true" includes="**/*" />
+		<mkdir dir="${build.home}/classes"/>
+		
+	</target>
+	
+
+	<target name="runtest" >
+		<antcall target="test.init" />
+		
+		<antcall target="testcommon"  >
+	  	  <param name="files" value="**/WorkingPriceListUpdateWSImplTest.java"/>
+		</antcall>
+		<antcall target="testcommon"  >
+	  	  <param name="files" value="**/WorkingOfferUpdateWSImplTest.java"/>
+		</antcall>
+		<antcall target="testcommon"  >
+		  <param name="files" value="**/PriceListComparisonWSImplTest.java"/>
+		</antcall>
+		<antcall target="testcommon"  >
+		  <param name="files" value="**/WorkingPriceListAccessWSImplTest.java"/>
+		</antcall>
+		<antcall target="testcommon"  >
+		  <param name="files" value="**/WorkingOfferAccessWSImplTest.java"/>
+		</antcall>
+		<antcall target="testcommon"  >
+		  <param name="files" value="**/TemplateConfigurationWSImplTest.java"/>
+		</antcall>
+	
+		<copy todir="${jboss.app.server.home}/server/${jboss.app.server.name}/deploy/${eas.report.war.dir}/${release.tag}/${ant.project.name}">
+			  <fileset dir="${junit.out.dir.html}"></fileset>			
+		</copy>	
+	</target>
+
+	<target name="Generatejavadoc" depends="">
+	         <javadoc  destdir="doc"
+	                   classpathref="classpath"
+	                       author="true"
+	                       version="true"
+	                       use="true"
+	                       windowtitle="Test API">
+
+	                <packageset dir="src/generated" defaultexcludes="yes">
+	                  <include name="*/**"/>
+	                 <!-- <exclude name="com/dummy/test/doc-files/**"/> -->
+	                </packageset>
+	         	    <packageset dir="pricing/src/impl" defaultexcludes="yes">
+   		                  <include name="*/**"/>
+	         		</packageset>
+         	        <packageset dir="offer/src/impl" defaultexcludes="yes">
+		                  <include name="*/**"/>
+         		    </packageset>
+     	            <packageset dir="mock/src/impl" defaultexcludes="yes">
+	                  <include name="*/**"/>
+     		        </packageset>
+   	                <packageset dir="comparison/src/impl" defaultexcludes="yes">
+                         <include name="*/**"/>
+   		            </packageset>
+
+	         	    <packageset dir="solicitation/src/impl" defaultexcludes="yes">
+                       <include name="*/**"/>
+ 		            </packageset>
+
+	         	
+	                <doctitle><![CDATA[<h1>business.services</h1>]]></doctitle>
+	                <bottom><![CDATA[<i>GSA FAS</i>]]></bottom>
+	                <tag name="todo" scope="all" description="To do:"/>
+	                <!-- <group title="Group 1 Packages" packages="com.dummy.test.a*"/>
+	                <group title="Group 2 Packages" packages="com.dummy.test.b*:com.dummy.test.c*"/>
+	                -->
+	                <link offline="true" href="http://download.oracle.com/javase/6/docs/api/" packagelistLoc=""/>
+	                <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+	             </javadoc>
+	    </target>	
+	
+	
+<!--	 <property name="junit.test.files" value="**/WorkingPriceListUpdateWSImplTest.java,
+		 	                                      **/WorkingOfferUpdateWSImplTest.java,
+		 										  **/PriceListComparisonWSImplTest.java,
+		 	                                      **/WorkingPriceListAccessWSImplTest.java,	 
+		 	                                      **/WorkingOfferAccessWSImplTest.java" /> 
+	-->
+	
+		
+</project>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://fas.gsa.gov/Vendor/v1.0"
+	xmlns:vdr="http://fas.gsa.gov/Vendor/v1.0" 
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+
+    <import  namespace="http://fas.gsa.gov/Global/v1.0" schemaLocation="Global.xsd"/>
+  
+    <complexType name="CompanyInfo">
+    	<sequence>
+    		<element name="name" type="glb:string255" />
+        <element name="division" type="glb:string255" />
+        <element name="address" type="glb:Address" />        <element name="phone" type="glb:string255" />
+    		<element name="fax" type="glb:string255" />
+    		<element name="email" type="glb:string255"/>
+    		<element name="webSite" type="glb:string255" />
+    		<element name="contacts" type="glb:string255" />
+    		<element name="tin" type="glb:string255" />
+    		<element name="businessSize" type="glb:string255" />
+    		<element name="status" type="glb:string1" />    	</sequence>
+	    </complexType>
+
+	    <element name="vendor" type="vdr:Vendor" />
+
+	    <complexType name="Vendor">
+		    	<sequence>
+		            <element name="vendorKey" type="vdr:VendorKey" />
+		            <element name="vendorPOC" type="vdr:VendorPOC" />
+			    	<element name="vendorInfo" type="vdr:CompanyInfo" minOccurs="0" />
+			    	<element name="authorizedNegotiators" type="vdr:AuthorizedNegotiator" minOccurs="0" maxOccurs="unbounded"/>
+			    	<element name="estimatedContractValue" type="glb:string255" minOccurs="0"  />
+			    	<element name="contractPeriod" type="glb:string255" minOccurs="0" />
+			    	<element name="typeOfContract" type="glb:string255" />
+		    	</sequence>
+		    	<attribute name="oid" type="long" use="required" />
+		</complexType>
+		
+	    <complexType name="VendorKey">
+	    	<sequence>
+	            <element name="duns">
+	            	<simpleType>
+		            	<union memberTypes="glb:empty">
+							<simpleType>
+			            		<restriction base="string">
+			            			<pattern value="\d{9}|\d{13}"/>
+			            		</restriction>
+	            			</simpleType>
+						</union>
+	            	</simpleType>
+	            </element>
+	    	</sequence>
+	    </complexType>
+	    
+		
+		<complexType name="VendorPOC">
+			<sequence>
+				<element name="contactInfo" type="glb:ContactInfo"/>
+			</sequence>
+		</complexType>
+		
+		<complexType name="AuthorizedNegotiator">
+		<!-- Updated Added title, phone, email, fax and renamed
+			representative to role 05/17/2010 -->
+			<sequence>
+				<element name="contactInfo" type="glb:ContactInfo"/>
+				<element name="role">
+						<simpleType>
+							<restriction base="string">
+								<enumeration value="AuthorizedToSign"></enumeration>
+								<enumeration value="NotAuthorizedToSign"></enumeration>
+							</restriction>
+						</simpleType>
+					</element>
+			</sequence>
+			<attribute name="oid" type="long" use="required" />
+		</complexType>
+		
+	<complexType name="VendorDetails">
+		<sequence>
+			<element name="dunsNumber" type="string"/>
+			<element name="vendorInfo" type="vdr:CompanyInfo" />
+			<element name="invoiceNumber" type="string" />
+			<element name="invoiceDate" type="date" />
+			<element name="poNumber" type="string" />
+			<element name="contractNumber" type="string" />
+			<element name="amount" type="glb:positivePriceType" />
+			<element name="quantity" type="glb:positiveInt"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="OrderInvoiceData">
+		<sequence>
+			<element name="invoiceNumber" type="string" minOccurs="0" />
+			<element name="invoiceDate" type="date" minOccurs="0" />
+			<element name="contractNumber" type="string" />
+			<element name="invoiceAmount" type="glb:positivePriceType" minOccurs="0" />
+			<element name="invoiceQuantity" type="int" minOccurs="0" />
+			<element name="vendorFax" type="string" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>		
+		
+</schema>

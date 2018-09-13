@@ -1,0 +1,37 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/Customer/v1.0" 
+	xmlns:cstmr="http://fas.gsa.gov/Customer/v1.0"
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+	
+	<import  namespace="http://fas.gsa.gov/Global/v1.0" 
+				schemaLocation="Global.xsd"/>
+	
+	<element name="customer" type="cstmr:Customer"/>
+	
+	<complexType name="Customer">
+		<sequence>
+			<element name="agency" type="cstmr:Agency" maxOccurs="unbounded"/>
+		</sequence>		
+	</complexType>
+	
+	<complexType name="Agency">
+		<sequence>
+			<element name="contact" type="cstmr:Contact" maxOccurs="unbounded"/>
+		</sequence>		
+	</complexType>
+	
+	<complexType name="Contact">
+		<sequence>
+			<element name="lastName" type="glb:string255"/>
+			<element name="firstName" type="glb:string255"/>
+			<element name="aac" type="string" minOccurs="0"/>
+			<element name="address" type="glb:Address" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="phone" type="glb:Phone" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="fax" type="glb:string255" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="email" type="glb:emailType" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="agency" type="string"/>
+			<element name="bureau" type="string"/>	
+		</sequence>	
+	</complexType>
+	
+</schema>

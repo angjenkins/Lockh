@@ -1,0 +1,150 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/OrderDiscrepancy/v1.0" 
+	xmlns:discr="http://fas.gsa.gov/OrderDiscrepancy/v1.0"
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+
+	<import  namespace="http://fas.gsa.gov/Global/v1.0" 
+				schemaLocation="Global.xsd"/>
+				
+	<complexType name="DiscrepancyItem">
+		<sequence>
+			<element name="niin" type="string"/>
+			<element name="unitCode" type="glb:string2"/>
+			<element name="adjustedQuantity" type="int"/>
+			<element name="requisitionNumber" type="glb:string14"/>
+			<element name="requisitionSuffix" type="glb:string1" nillable="true"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="WdcOrderCodes">
+		<sequence>
+			<element name="signalCode" type="glb:string1" nillable="true"/>
+			<element name="fundCode" type="glb:string2" nillable="true"/>
+			<element name="projectCode" type="glb:string3" nillable="true"/>
+			<element name="priorityCode" type="string" nillable="true"/>			
+			<element name="distributionCode" type="glb:string3" nillable="true"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="AgencyDetails">
+		<sequence>
+			<element name="agencyBureauCode" type="string"/>
+			<element name="stateCode" type="string"/>
+			<element name="cityCode" type="string"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="ZKP">
+		<sequence>
+			<element name="discrepancyKey" type="long"/>
+			<element name="resubmitFlag" type="short"/>
+			<element name="createdUserCode" type="glb:string2"/>
+			<element name="requisitionNumber" type="glb:string14"/>
+			<element name="requisitionSuffix" type="glb:string1" nillable="true"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Finance305">
+		<sequence>
+			<element name="discrepancyKey" type="long"/>
+			<element name="resubmitFlag" type="short"/>
+			<element name="discrepancyItem" type="discr:DiscrepancyItem"/>
+			<element name="recordId" type="int"/>
+			<element name="rtgId" type="glb:string3"/>
+			<element name="comCtrCd" type="glb:string1" nillable="true"/>
+			<element name="supplementAddrAAC" type="glb:string6" nillable="true"/>
+			<element name="orderCodes" type="discr:WdcOrderCodes"/>
+			<element name="extSellValue" type="long"/>
+			<element name="sellPrice" type="long"/>
+			<element name="agencyDetails" type="discr:AgencyDetails"/>
+			<element name="exportDomesticCode" type="glb:string1"/>
+			<element name="actionCode" type="glb:string2"/>
+			<element name="manifestPONumber" type="glb:string8"/>
+			<element name="fasPONumber" type="glb:string10"/>
+			<element name="boac" type="glb:string6"/>
+			<element name="region" type="glb:string1"/>
+			<element name="adviceCode" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Reshipment"> <!--A15-->
+		<sequence>
+			<element name="discrepancyKey" type="long"/>
+			<element name="resubmitFlag" type="short"/>
+			<element name="docIdentifierExtension" type="glb:string1"/>
+			<element name="routingIdentifierCode" type="string"/>
+			<element name="mediaStatus" type="glb:string1"/>
+			<element name="discrepancyItem" type="discr:DiscrepancyItem"/>
+			<element name="supplementAddrAAC" type="glb:string6" nillable="true"/>
+			<element name="orderCodes" type="discr:WdcOrderCodes"/>
+			<element name="requiredDeliveryDate" type="string"/>
+			<element name="adviceCode" type="string"/>
+			<element name="transportDispositionCode" type="glb:string2"/>
+			<element name="createdUserCode" type="glb:string2"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="MaterialReturn"> <!--ZAU -->
+		<sequence>
+			<element name="discrepancyKey" type="long"/>
+			<element name="resubmitFlag" type="short"/>
+			<element name="discrepancyItem" type="discr:DiscrepancyItem"/>
+			<element name="supplementAddrAAC" type="glb:string6" nillable="true"/>
+			<element name="signalCode" type="glb:string1" nillable="true"/>
+			<element name="fundCode" type="glb:string2" nillable="true"/>
+			<element name="routingIdentifierCode" type="string"/>
+			<element name="adjustedValue" type="long"/>
+			<element name="createdUserCode" type="glb:string2"/>
+			<element name="liabilityCode" type="glb:string1"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ZLA">
+		<sequence>
+			<element name="discrepancyKey" type="long"/>
+			<element name="resubmitFlag" type="short"/>
+			<element name="routingIdentifierCode" type="glb:string3"/> 
+			<!--   <element name="returnedUnitCode" type="glb:string1"/>-->
+			<element name="discrepancyItem" type="discr:DiscrepancyItem"/>
+			<element name="supplementAddrAAC" type="glb:string6" nillable="true"/>
+			<element name="orderCodes" type="discr:WdcOrderCodes"/>
+			<element name="sellPrice" type="long"/>
+			<!--  <element name="adjustedUnitPrice" type="double" nillable="true"/>-->
+			<element name="docIdentifierCode" type="string"/>
+			<element name="shippedDate" type="dateTime" nillable="true"/>
+			<element name="costPrice" type="long"/>
+			<element name="agencyDetails" type="discr:AgencyDetails"/>
+			<element name="consigneeAAC" type="glb:string6" nillable="true"/>
+			<element name="poNumber" type="string"/>
+			<element name="actionCode" type="glb:string2"/>
+			<element name="exportDomesticCode" type="glb:string1" nillable="true"/>
+			<element name="createdUserCode" type="glb:string2"/>
+			<element name="adviceCode" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ZSA">
+		<sequence>
+			<element name="discrepancyKey" type="long"/>
+			<element name="resubmitFlag" type="short"/>
+			<element name="discrepancyItem" type="discr:DiscrepancyItem"/>
+			<element name="costPrice" type="long" nillable="true"/>
+			<element name="sellPrice" type="long" nillable="true"/>
+			<element name="createdUserCode" type="glb:string2"/>
+			<element name="actionCode" type="glb:string2"/>
+			<element name="adviceCode" type="string"/>					
+		</sequence>
+	</complexType>
+	
+	<complexType name="VendorOffset">
+		<sequence>
+			<element name="discrepancyKey" type="long"/>
+			<element name="poNumber" type="string"/>
+			<element name="contractNumber" type="string"/>
+			<element name="offsetAmount" type="long"/>
+			<element name="createdUserCode" type="glb:string2"/>
+			<element name="acoName" type="string"/>			
+			<element name="problemType" type="string"/>
+		</sequence>
+	</complexType>
+</schema>

@@ -1,0 +1,96 @@
+<wsdl:definitions name="PriceCheck"
+	targetNamespace="http://fas.gsa.gov/services/Pricing/v1.0"
+	xmlns:tns="http://fas.gsa.gov/services/Pricing/v1.0"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"  
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:prc="http://fas.gsa.gov/Pricing/v1.0"
+  xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+	
+	<!--  WSDL Types declarations -->	
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://fas.gsa.gov/services/Pricing/v1.0"
+    						xmlns:tns="http://fas.gsa.gov/services/Pricing/v1.0"
+    						xmlns:prc="http://fas.gsa.gov/Pricing/v1.0"
+    						xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0"  
+    						xmlns:flt="http://fas.gsa.gov/Faults/v1.0"
+    						xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<xsd:import namespace="http://fas.gsa.gov/Pricing/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/services/Messages/v1.0" />
+    	<xsd:import namespace="http://fas.gsa.gov/Faults/v1.0" />
+    	
+    	<xsd:element name="getEddPriceRequest" type="prc:EDDItem"/>
+    	<xsd:element name="getEddPriceResponse" type="msg:EDDItemPriceList"/>
+    	<xsd:element name="getNiinPriceRequest" type="msg:NIINItemPriceRequest"/>
+    	<xsd:element name="getNiinPriceResponse" type="prc:NIINItemPrice"/>    	
+    	<!--  Service fault element -->
+			<xsd:element name="serviceFault"	nillable="true" type="flt:ServiceFault" />
+		</xsd:schema>
+  </wsdl:types>
+  <!-- WSDL Message declarations -->
+  <wsdl:message name="GetEddPriceRequest">
+    <wsdl:part element="tns:getEddPriceRequest" name="getEddPriceRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetEddPriceResponse">
+    <wsdl:part element="tns:getEddPriceResponse" name="getEddPriceResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetNiinPriceRequest">
+    <wsdl:part element="tns:getNiinPriceRequest" name="getNiinPriceRequest"/>
+  </wsdl:message>
+  <wsdl:message name="GetNiinPriceResponse">
+    <wsdl:part element="tns:getNiinPriceResponse" name="getNiinPriceResponse"/>
+  </wsdl:message>  
+	<wsdl:message name="ServiceFault">
+  	<wsdl:part element="tns:serviceFault" name="serviceFault" />
+  </wsdl:message> 
+    
+   <!--  WSDL Port Operations --> 
+  <wsdl:portType name="PriceCheck">
+    <wsdl:operation name="getEddItemPrice">
+      <wsdl:input message="tns:GetEddPriceRequest"/>
+      <wsdl:output message="tns:GetEddPriceResponse"/>
+			<wsdl:fault message="tns:ServiceFault"  name="getEddItemPriceFault" />      
+    </wsdl:operation>
+    <wsdl:operation name="getNiinItemPrice">
+      <wsdl:input message="tns:GetNiinPriceRequest"/>
+      <wsdl:output message="tns:GetNiinPriceResponse"/>
+			<wsdl:fault message="tns:ServiceFault"  name="getNiinItemPriceFault" />      
+    </wsdl:operation>    
+  </wsdl:portType>
+  
+  <!--  WSDL Binding -->
+  <wsdl:binding name="PriceCheckBinding" type="tns:PriceCheck">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getEddItemPrice">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="getEddItemPriceFault">
+  			<soap:fault use="literal" name="getEddItemPriceFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>
+    <wsdl:operation name="getNiinItemPrice">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="getNiinItemPriceFault">
+  			<soap:fault use="literal" name="getNiinItemPriceFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>    
+  </wsdl:binding>
+  
+  <!--  WSDL Service -->
+  <wsdl:service name="PriceCheck">
+    <wsdl:port binding="tns:PriceCheckBinding" name="PriceCheckBinding">
+      <soap:address location="http://localhost:8080/order.serivces/PriceCheck"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

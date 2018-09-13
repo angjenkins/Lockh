@@ -1,0 +1,78 @@
+package gov.gsa.fas.services.order.v1.wdc.dao;
+
+import org.junit.Before;
+import org.junit.Test;
+
+@Deprecated //We're not using order
+public abstract class Order_WdcOrderPartDaoTest extends AbstractWdcOrderPartDaoTest{
+
+	
+	@Before
+	public void setUp() throws Exception {
+		this.wdcOrderPartDao = wdcOrderPartDaoFactory.createWdcOrderPartDao_Order();
+	}
+
+	@Test
+	public void testMissing_nosfx() {
+		runMissingTest("12345678901234", null);
+	}
+	@Test
+	public void testMissing_wisfx() {
+		runMissingTest("12345678901234", "Q");
+	}
+	
+	@Test
+	public void testAllData_nosfx_ALEAAC5263004E() {
+		runTest("ALEAAC5263004E", null);
+	}
+	
+	@Test
+	public void testAllData_nosfx_ALEAAC6004001E() {
+		runTest("ALEAAC6004001E", null);
+	}
+
+	@Test
+	public void testAllData_wsfx_BJOB5V20440313_() {
+		runTest("BJOB5V20440313", "");
+	}
+
+	@Test
+	public void testAllData_wsfx_BKEC9M71490083_() {
+		runTest("BKEC9M71490083", "");
+	}
+
+
+	@Test
+	public void testChrfOnly_nosfx_BAEA5V40790041() {
+		runTest("BAEA5V40790041", null);
+	}
+	@Test
+	public void testChrfOnly_nosfx_BAEA5V40823005() {
+		runTest("BAEA5V40823005", null);
+	}
+	@Test
+	public void testChrfOnly_wisfx_AC041193070191_() {
+		runTest("AC041193070191", "");
+	}
+//	@Test
+//	public void testChrfOnly_wisfx__() {
+//		runTest("", "");
+//	}
+
+	@Test
+	public void testUhrfOnly_nosfx_BACA9N5014A126() {
+		runTest("BACA9N5014A126", null);
+	}
+	@Test
+	public void testUhrfOnly_nosfx_BACA9N5014A202() {
+		runTest("BACA9N5014A202", null);
+	}
+	@Test
+	public void testUhrfOnly_wisfx_BISH5V00240659_() {
+		runTest("BISH5V00240659", "");
+	}
+	@Test
+	public void testUhrfOnly_wisfx_BISH5V72641449_() {
+		runTest("BISH5V72641449", "");
+	}
+}

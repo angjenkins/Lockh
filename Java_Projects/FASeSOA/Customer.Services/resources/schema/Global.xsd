@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema targetNamespace="http://fas.gsa.gov/Global/v1.0" xmlns:glb="http://fas.gsa.gov/Global/v1.0"  xmlns="http://www.w3.org/2001/XMLSchema">
+	
+	<!-- All Data Types are moved to CommonDataTypes.xsd file -->
+	<include schemaLocation="CommonDataTypes.xsd" />
+	
+	<complexType name="Input">
+		<sequence>
+			<element name="label" type="glb:Label"/>
+			<element name="defaultValue" type="glb:Value" minOccurs="0"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+
+	<complexType name="Select">
+		<sequence>
+			<element name="label" type="glb:Label"/>
+			<element name="options" type="glb:Option" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="defaultValue" type="glb:Value"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+
+	<complexType name="Select1">
+		<sequence>
+			<element name="label" type="glb:Label"/>
+			<element name="options" type="glb:Option" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="defaultValue" type="glb:Value"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+
+	<complexType name="Upload">
+		<sequence>
+			<element name="label" type="glb:Label"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+	
+	<complexType name="Label">
+		<sequence>
+			<element name="labelTxt" type="glb:string255"/>
+			<element name="description" type="glb:string255" nillable="true"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required"/>
+	</complexType>
+
+	<complexType name="DocHeader">
+		<sequence>
+			<element name="title" type="glb:string255"/>
+			<element name="status" type="glb:DocStatus"/>
+			<element name="description" type="glb:string255" minOccurs="0"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required"/>
+	</complexType>
+	
+	<complexType name="Attachment">
+		<sequence>
+			<element name="label" type="glb:Label" />
+			<element name="docId" type="glb:string255"/>
+			<element name="docType" type="glb:DocumentType"/>
+			<element name="doc" type="base64Binary"/>
+		</sequence>
+		<attribute name="isRequired" type="boolean" use="optional"/>
+		<attribute name="oid" type="long" use="required"/>
+	</complexType>
+	
+	<complexType name="ResponseItem">
+		<choice>
+			<element name="input" type="glb:Input"/>
+			<element name="select" type="glb:Select"/>
+			<element name="select1" type="glb:Select1"/>
+			<element name="upload" type="glb:Upload"/>
+		</choice>
+		<attribute name="oid" type="long" use="required"/>
+	</complexType>
+	
+	<complexType name="Option">
+		<sequence>
+			<element name="labelTxt" type="glb:string255"/>
+			<element name="description" type="glb:string255" minOccurs="0"/>
+			<element name="value" type="glb:Value"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required"/>
+	</complexType>
+	
+	<complexType name="Value">
+		<sequence>
+			<element name="content" type="glb:string255"/>
+			<element name="valueType" type="glb:ValueType"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required"/>
+	</complexType>
+	
+	<complexType name="Address">
+		<sequence>
+			<element name="name" type="glb:string255" minOccurs="0" />
+			<element name="attn" type="glb:string255" minOccurs="0" />
+			<element name="addrType" type="glb:AddressType" minOccurs="0" />
+			<element name="address1" type="glb:string255"/>
+			<element name="address2" type="glb:string255"/>
+			<element name="address3" type="glb:string255"/>
+			<element name="city" type="glb:string255"/>
+			<element name="zip" type="glb:string255"/>
+			<element name="zip4" type="glb:string255" minOccurs="0"/>
+			<element name="state" type="glb:string255"/>
+			<element name="country" type="glb:string255"/>
+			<element name="phone" type="glb:string255" minOccurs="0"/>
+			<element name="phoneExt" type="glb:string10" minOccurs="0" />
+			<element name="fax" type="glb:string255" minOccurs="0" />
+			<element name="email" type="glb:emailType" minOccurs="0"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+	
+	<complexType name="AddressType">
+		<sequence>
+			<element name="addrTypeId" type="int"/>
+			<element name="addrTypeName" type="glb:string255"/>
+			<element name="addrTypeDesc" type="glb:string255"/>
+			<element name="addrTypeStatus" type="int"/>
+		</sequence>
+		<attribute name="oid" type="long" use="optional" default="0"/>
+	</complexType>
+	
+	<complexType name="Phone">
+		<sequence>
+			<element name="phoneNumberType" type="glb:PhoneNumberType" minOccurs="0" />
+			<element name="phone" type="glb:string255"/>
+			<element name="phoneExt" type="glb:string10" minOccurs="0" />
+		</sequence>
+	</complexType>	
+	
+	<complexType name="DocumentType">
+		<sequence>
+			<element name="name" type="glb:string255"/>
+			<element name="desc" type="glb:string255"/>
+			<element name="parent" type="glb:string255"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+	
+	<complexType name="IRSType">
+		<sequence>
+			<element name="Name" type="glb:string255"/>
+			<element name="Phone" type="glb:string255"/>
+			<element name="Email" type="glb:emailType"/>
+		</sequence>
+		<attribute name="oid" type="long" use="required" />
+	</complexType>
+	
+	<complexType name="AttachmentList">
+		<sequence>
+			<element name="attachment" type="glb:Attachment" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="DocHeaderList">
+		<sequence>
+			<element name="docId" type="glb:DocHeader" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="ContactInfo">
+		<sequence>
+			<element name="name" type="glb:string255"/>
+			<element name="title" type="glb:string255" minOccurs="0"/>
+			<element name="phone" type="glb:string255" minOccurs="0"/>
+			<element name="fax" type="glb:string255" minOccurs="0"/>
+			<element name="email" type="glb:string255" minOccurs="0"/>
+			<element name="address" type="glb:Address" minOccurs="0"/>						
+		</sequence>
+	</complexType>
+	<attribute name="version" type="double" />
+	<attribute name="status" type="string" />
+	<attribute name="timestamp" type="string" />
+	<attribute name="validation" type="string" />
+
+</schema>

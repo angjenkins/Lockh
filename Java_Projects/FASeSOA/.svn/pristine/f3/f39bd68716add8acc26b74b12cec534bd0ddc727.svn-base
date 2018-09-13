@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://fas.gsa.gov/Order/v1.0"
+	xmlns:ord="http://fas.gsa.gov/Order/v1.0"
+	xmlns:vdr="http://fas.gsa.gov/Vendor/v1.0" 
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+
+	<import namespace="http://fas.gsa.gov/Global/v1.0"/>
+	<import namespace="http://fas.gsa.gov/Vendor/v1.0"/>
+	
+	
+	<element name="order" type="ord:Order"/>
+	
+
+	<simpleType name="OrderOrigin">
+		<restriction base="string">
+			<enumeration value="CSC"/>
+			<enumeration value="EDD"/>
+			<enumeration value="GECO"/>
+			<enumeration value="WDC"/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="OrderNumberScope">
+		<restriction base="string">
+			<enumeration value="CSC"/>
+			<enumeration value="WDC"/>
+		</restriction>
+	</simpleType>
+	
+	<complexType name="OrderNumber">
+		<sequence>
+			<element name="value" type="glb:string15"/>
+		</sequence>	
+		<attribute name="scope" type="ord:OrderNumberScope"/>	
+		<attribute name="suffix" type="glb:string10"/>	
+	</complexType>
+
+	<simpleType name="GecoOrderNumber">
+		<restriction base="string">
+			<length value="12"/>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="GgsSessionNumber">
+		<restriction base="string">
+			<length value="10"/>
+		</restriction>
+	</simpleType>
+	
+	
+	<complexType name="ActivityAddressCode">
+		<sequence>
+			<element minOccurs="1" name="value" type="glb:string6"/>
+			<element minOccurs="0" name="accessCode" type="glb:string6"/>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="Store">
+		<sequence>
+			<element minOccurs="1" name="storeNumber" type="glb:string2"/>
+			<element minOccurs="1" name="locationCode" type="glb:string2"/>
+			<element minOccurs="1" name="locationDescription" type="glb:string30" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="liid">
+		<sequence>
+			<element minOccurs="1" name="liidId" type="glb:string4"/>
+		</sequence>
+	</complexType>	
+
+	<complexType name="Order">
+		<sequence>
+			<element minOccurs="1" name="type" type="ord:OrderOrigin"/>
+			<!-- Order Identifiers -->
+			<element minOccurs="1" name="orderNumber" type="ord:OrderNumber"/>
+			<element minOccurs="0" name="gecoOrderNumber" type="ord:GecoOrderNumber">
+				<annotation>
+					<documentation>Only used for orders placed in the GECO System</documentation>
+				</annotation>
+			</element>
+			<element minOccurs="0" name="ggsSessionNumber" type="ord:GgsSessionNumber">
+				<annotation>
+					<documentation>Only used for orders placed through EDD system</documentation>
+				</annotation>
+			</element>
+
+			<element minOccurs="1" name="aac" type="ord:ActivityAddressCode"/>
+			<element minOccurs="0" name="orderDate" type="date">
+				<annotation>
+					<documentation>Order Date in the CSC System</documentation>
+				</annotation>
+			</element>
+			<element minOccurs="0" name="store" type="ord:Store">
+				<annotation>
+					<documentation>Order Address stored in CSC System</documentation>
+				</annotation>
+			</element>
+			<element minOccurs="0" name="liid" type="ord:liid">
+				<annotation>
+					<documentation>LIID information in CSC System</documentation>
+				</annotation>
+			</element>
+			<element minOccurs="0" name="orderAddress" type="glb:Address">
+				<annotation>
+					<documentation>Order Address stored in CSC System</documentation>
+				</annotation>
+			</element>
+			
+			<!--element minOccurs="0" name="shipmentInfo" type="ord:ShipmentInfo">
+				<annotation>
+					<documentation>WDC Shipment Info</documentation>
+				</annotation>
+			</element-->
+			
+			<element minOccurs="1" name="lineItemList">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="unbounded" name="lineItem" type="ord:LineItem" />
+					</sequence>				
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+	
+	
+	<!-- =========================================================================================================== -->
+	<!-- 	ShipmentInfo Types -->
+	<!-- =========================================================================================================== -->
+	<complexType name="ShipmentInfo">
+		<sequence>
+			<element minOccurs="0" name="actualShipDate" type="date"/>
+			<!--Not Present element minOccurs="0" name="carrierName" type="glb:string50"/-->
+			<!--Not Present element minOccurs="0" name="pickupScac" type="ord:Scac"/-->
+			<!--Not Present element minOccurs="0" name="deliveryScac" type="ord:Scac"/-->
+			<!--Not Present element minOccurs="0" name="fulfillmentMethod" type="ord:FulfillmentMethod"/-->
+			<element minOccurs="0" name="transportation" type="ord:Transportation"/>
+			<element minOccurs="0" name="exportInfo" type="ord:ExportInfo"/>
+			<!--Not present element minOccurs="0" name="surchargeCode" type="glb:string1"/-->
+			<element minOccurs="0" name="carrierTrackingDetails" type="ord:CarrierTrackingDetails"/>
+		</sequence>
+	</complexType>
+	
+	<!--  CSC Shipment details -->
+	<complexType name="ShipmentData">
+		<sequence>
+			<element minOccurs="0" name="shipmentPoNumber" type="glb:string10"/>
+			<element minOccurs="0" name="manifestNumber" type="glb:string8"/>
+			<element minOccurs="0" name="actualShipDate" type="date"/>
+			<element minOccurs="0" name="transportation" type="ord:Transportation"/>
+			<element minOccurs="0" name="govtBillOfLadingNumber" type="glb:string8"/>
+			<element minOccurs="0" name="trackingNumber" type="string"/>
+			<element minOccurs="0" name="carrierName" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<!--Not Present complexType name="Scac">
+		<sequence>
+			<element minOccurs="1" name="code" type="glb:string6"/>
+			<element minOccurs="1" name="name" type="glb:string50"/>
+		</sequence>
+	</complexType-->
+	
+	<complexType name="FulfillmentMethod">
+		<sequence>
+			<element minOccurs="1" name="code" type="glb:string2"/>
+			<element minOccurs="1" name="description" type="glb:string50"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Transportation">
+		<sequence>
+			<element minOccurs="0" name="mode" type="glb:string1"/>
+			<!--element minOccurs="1" name="description" type="glb:string50"/-->
+			<element minOccurs="0" name="controlNumber" type="glb:string17"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ExportInfo">
+		<sequence>
+			<element minOccurs="1" name="type" type="ord:ExportType"/>
+			<element minOccurs="0" name="exportPackingFacility" type="glb:string1"/>
+			<element minOccurs="0" name="pointOfEmbarkation" type="glb:string3"/>
+			<!--element minOccurs="0" name="packingFacility" type="ord:PackingFacility"/-->
+		</sequence>
+	</complexType>
+	<simpleType name="ExportType">
+		<restriction base="string">
+			<enumeration value="D"/>
+			<enumeration value="E"/>
+			<enumeration value="F"/>
+			<enumeration value="G"/>
+			<enumeration value="H"/>
+			<enumeration value="J"/>
+			<enumeration value="K"/>
+			<enumeration value="L"/>
+			<enumeration value="Q"/>
+		</restriction>
+	</simpleType>
+	<!--complexType name="PackingFacility">
+		<sequence>
+			<element minOccurs="1" name="code" type="glb:string3"/>
+			<element minOccurs="1" name="description" type="glb:string50"/>
+			<element minOccurs="1" name="type" type="glb:string3"/>
+		</sequence>
+	</complexType-->
+	
+	<complexType name="CarrierTrackingDetails">
+		<sequence>
+			<!--Not Present element minOccurs="0" name="trackingNumber" type="glb:string255"/-->
+			<!-- Not Present element minOccurs="0" name="freightBillNumber" type="glb:string255"/-->
+			<element minOccurs="0" name="freightOnBoardCode" type="glb:string1"/>
+			<element minOccurs="0" name="shipmentPoNumber" type="glb:string10"/>
+			<element minOccurs="0" name="govtBillOfLadingNumber" type="glb:string11"/>
+			<element minOccurs="0" name="inlaneGovtBillOfLadingNumber" type="glb:string11"/>
+			<element minOccurs="0" name="manifestNumber" type="glb:string8"/>
+			<!-- Not Present element minOccurs="0" name="carrierClaim" type="ord:CarrierClaim"/-->
+		</sequence>		
+	</complexType>
+	<!-- Not Present complexType name="FreightOnBoardDetails">
+		<sequence>
+			<element minOccurs="1" name="code" type="glb:string1"/>
+			<element minOccurs="1" name="description" type="glb:string50"/>
+		</sequence>
+	</complexType-->
+	<!-- Not Present complexType name="CarrierClaim">
+		<sequence>
+			<element minOccurs="1" name="flag" type="glb:string3"/>
+			<element minOccurs="1" name="number" type="glb:string8"/>
+		</sequence>
+	</complexType-->
+	<!-- =========================================================================================================== -->
+	<!-- 	LineItem Types -->
+	<!-- =========================================================================================================== -->
+	<complexType name="LineItem">
+		<sequence>
+			<element minOccurs="1" name="itemNumber" type="ord:ItemNumber"/>
+			
+			<element minOccurs="1" name="quantity" type="ord:ItemQuantity"/>
+
+			<element minOccurs="0" name="cscItemDetails" type="ord:CscItemDetails"/>
+
+			<element minOccurs="0" name="wdcOrderedItemDetails" type="ord:WdcOrderedItemDetails">
+				<annotation>
+					<documentation>Extra WDC Item Information on what was originally ordered</documentation>
+				</annotation>
+			</element>
+			<element minOccurs="0" name="wdcFulfilledItemDetails" type="ord:WdcFullfilledItemDetails">
+				<annotation>
+					<documentation>Extra WDC Item Information on what was actually Shipped</documentation>
+				</annotation>
+			</element>
+			
+			<element minOccurs="0" name="wdcProcessStages" type="ord:WdcProcessStageList">
+				<annotation>
+					<documentation>Log of WDC Process Stages</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+
+	<simpleType name="ItemNumberStandard">
+		<restriction base="string">
+			<enumeration value="NIIN"/>
+			<enumeration value="EDD"/>
+			<enumeration value="NSN"/>
+		</restriction>
+	</simpleType>
+	<complexType name="ItemNumber">
+		<sequence>
+			<element name="value" type="glb:string40"/>
+		</sequence>
+		<attribute name="standard" use="required" type="ord:ItemNumberStandard"/>		
+		<attribute name="prefix" use="optional" type="glb:string4"/>		
+		<attribute name="suffix" use="optional" type="glb:string10"/>	
+	</complexType>
+
+
+	<complexType name="ItemQuantity">
+		<sequence>
+			<element name="value" type="double"/>
+		</sequence>
+		<attribute name="unitCode" type="glb:string2"/>		
+	</complexType>
+	<!-- =========================================================================================================== -->
+	<!-- 	CscItemDetails -->
+	<!-- =========================================================================================================== -->
+
+
+
+	<complexType name="CscItemDetails">
+		<sequence>
+			<element minOccurs="0" name="store" type="ord:Store" />
+			<element minOccurs="0" name="eddRequisitionNumber" type="ord:EddRequisitionNumber" />
+			<element minOccurs="1" name="sellPrice" type="glb:priceType"/>
+			<element minOccurs="1" name="costPrice" type="glb:priceType"/>
+			<element minOccurs="0" name="backOrder" type="glb:string1"/>
+			<element minOccurs="1" name="description" type="string"/>
+			<element minOccurs="1" name="shipment" type="ord:ShipmentData" nillable="true"/>
+			<element minOccurs="0" name="tcn" type="string"/>
+			<element minOccurs="0" name="unitWeight" type="double"/>
+			<element minOccurs="0" name="receiptDateOrdered" type="date"/>
+			<element minOccurs="0" name="receiptDateReceived" type="date"/>
+			<element minOccurs="0" name="salePickup" type="glb:string1"/>
+			<element minOccurs="0" name="projectCode" type="string"/>
+			<element minOccurs="0" name="priorityCode" type="string"/>
+			<element minOccurs="0" name="appropNumber" type="string"/>
+			<element minOccurs="0" name="depot" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="EddRequisitionNumber">
+		<sequence>
+			<element name="requisitionNumber" type="glb:string14"/>
+		</sequence>
+		<attribute name="suffix" type="glb:string1"/>	
+	</complexType>			
+	<!-- =========================================================================================================== -->
+	<!-- 	WdcItemDetails -->
+	<!-- =========================================================================================================== -->
+	<complexType name="WdcItemDetails" abstract="true">
+		<sequence>
+			<element minOccurs="0" name="nsn" type="glb:string15" />
+			<!-- Not present element minOccurs="1" name="nsnDescription" type="glb:string35" /-->
+			<element minOccurs="0" name="orderPrice" type="glb:priceType"/>
+			<element minOccurs="0" name="costPrice" type="glb:priceType"/>
+			
+			<element minOccurs="0" name="routingIdentitierCode" type="glb:string3"/>
+			<!-- Not present <element minOccurs="1" name="fedStockInfo" type="ord:FederalStockInfo"/-->
+			<!-- Not present <element minOccurs="1" name="commodityCode" type="glb:string10"/-->
+			<!-- Not present <element minOccurs="1" name="multipleCommodityCode" type="glb:string10"/-->
+			<element minOccurs="0" name="transactionDispositionCode" type="glb:string2"/>
+			<element minOccurs="0" name="quantity" type="ord:ItemQuantity">
+				<annotation>
+					<documentation>Ordered Quantity OR MRO Quantity</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	
+	<!-- Not present <complexType name="FederalStockInfo">
+		<sequence>
+			<element minOccurs="1" name="class" type="glb:string4"/>
+			<element minOccurs="1" name="group" type="glb:string2"/>
+		</sequence>
+	</complexType-->
+
+
+	<complexType name="WdcOrderedItemDetails">
+		<complexContent>
+			<extension base="ord:WdcItemDetails">
+				<sequence>
+					<element minOccurs="0" name="documentIdentitierCode" type="glb:string3">
+						<annotation>
+							<documentation>Newly added field</documentation>
+						</annotation>
+					</element>
+					<element minOccurs="0" name="customerSatusUpdateMedium" type="glb:string1"/>
+					<element minOccurs="0" name="supplementalAac" type="ord:ActivityAddressCode"/>
+					<!-- Not present <element minOccurs="1" name="customerInstructions" type="glb:string1"/-->
+					<element minOccurs="0" name="signalCode" type="glb:string1"/>
+					<element minOccurs="0" name="fundCode" type="glb:string2"/>
+					<element minOccurs="0" name="distributionCode" type="glb:string4"/>
+					<element minOccurs="0" name="projectCode" type="glb:string5"/>
+					<element minOccurs="0" name="priority" type="ord:RequisitionPriority"/>
+					<element minOccurs="0" name="adviceCode" type="glb:string2"/>
+					<element minOccurs="0" name="tdCode" type="glb:string5"/>
+					<!-- Not present <element minOccurs="1" name="shipmentManifestNumber" type="glb:string8"/-->
+					<!-- Not present <element minOccurs="1" name="referenceId" type="glb:string10"/-->
+					<element minOccurs="0" name="entryDate" type="date"/>
+					<element minOccurs="0" name="editDate" type="date"/>
+					<element minOccurs="0" name="requiredDeliveryDateCode" type="glb:string3"/>
+					<element minOccurs="0" name="calculatedRequiredDeliveryDate" type="date"/>
+					<element minOccurs="0" name="buyComputationDate" type="date"/>
+					<element minOccurs="0" name="futureFreezeDate" type="date"/>
+					<element minOccurs="0" name="associatedAgencyCodes" type="ord:AssociatedAgencyCodes"/>
+					<element minOccurs="0" name="exportType" type="ord:ExportType"/>
+					<element minOccurs="0" name="inputCode" type="glb:string1"/>
+					<element minOccurs="0" name="consignee" type="ord:WdcConsignee"/>
+					<!-- Not present element minOccurs="1" name="urhfToCrhfTransferDate" type="date"/-->
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType> 
+
+
+	<complexType name="RequisitionPriority">
+		<sequence>
+			<element minOccurs="1" name="code" type="glb:string2"/>
+			<element minOccurs="1" name="group" type="glb:string1"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="AssociatedAgencyCodes">
+		<sequence>
+			<element minOccurs="0" name="agency" type="glb:string2"/>			
+			<element minOccurs="0" name="bureau" type="glb:string2"/>
+			<element minOccurs="0" name="state" type="glb:string2"/>
+			<element minOccurs="0" name="city" type="glb:string4"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="WdcConsignee">
+		<sequence>
+			<element minOccurs="0" name="aac" type="ord:ActivityAddressCode"/>
+			<element minOccurs="0" name="zone" type="glb:string5"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="WdcFullfilledItemDetails">
+		<complexContent>
+			<extension base="ord:WdcItemDetails">
+				<sequence>
+					<element minOccurs="0" name="administrativeContractingOffice" type="glb:string1"/>
+					<element minOccurs="0" name="shippedQuantity" type="ord:ItemQuantity"/>
+					<element minOccurs="0" name="quantityCut" type="double"/>
+					<!-- Not present element minOccurs="1" name="allowedQuantityVariance" type="float"/-->
+					<element minOccurs="0" name="estimatedShipDate" type="date"/>
+					<!-- On ShipmentInfo element minOccurs="1" name="actualShipDate" type="date"/-->
+					<element minOccurs="0" name="unitWeight" type="double"/>
+					<element minOccurs="0" name="shipmentInfo" type="ord:ShipmentInfo"/>
+					<element minOccurs="0" name="dunsNumber" type="glb:string10"/>
+					<element minOccurs="0" name="variance" type="string"/> 
+					<!-- Not present element minOccurs="1" name="processCode" type="glb:string2"/-->
+					<!-- Not present element minOccurs="1" name="processDate" type="date"/-->
+					<element minOccurs="0" name="billedDate" type="date"/>
+					<element minOccurs="0" name="status" type="glb:string2"/>
+				</sequence>
+			</extension>
+		</complexContent>		
+	</complexType>
+
+
+	<complexType name="WdcProcessStageList">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="stage" type="ord:WdcProcessStage"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="WdcProcessStage">
+		<sequence>
+			<element minOccurs="1" name="code" type="glb:string2"/>
+			<element minOccurs="1" name="julianDate" type="glb:string7"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="OrderItem">
+		<sequence>
+			<element name="nsn" type="string"/>
+			<element name="unitCode" type="glb:string2"/>
+			<element name="quantity" type="int"/>
+			<element name="requisitionNumber" type="glb:string14"/>
+			<element name="requisitionSuffix" type="glb:string1" nillable="true"/>
+		</sequence>
+	</complexType>		
+</schema>

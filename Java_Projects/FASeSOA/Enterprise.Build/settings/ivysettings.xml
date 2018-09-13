@@ -1,0 +1,86 @@
+<ivysettings>
+  <properties file="${ivy.settings.dir}/ivy.properties" />
+  <settings defaultCacheDir="${my.ivy.dir}/cache"
+    defaultResolver="enterprise" defaultConflictManager="all" />
+
+
+<credentials host="${lm.artifactory.host}" realm="Artifactory Realm" username="easuser" passwd="easuser1"/> 
+<credentials host="${shared.repo.host}" realm="Artifactory Realm" username="easuser" passwd="easuser1"/>
+<!--
+
+  <credentials host="localhost" realm="Anything" username="easuser"
+    passwd="easuser1" /> -->
+
+  <property name="ivy.pattern"
+    value="/[organisation]/[module]/ivys/ivy-[revision].xml" />
+
+  <propery name="artifact.pattern"
+    value="/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]" />
+
+  <import file="ivy-namespaces.xml" />
+
+  <!-- shared resolver settings -->
+  <property name="shared.repo.dir"
+    value="${my.ivy.dir}/shared-repository" override="false" />
+
+  <!-- local resolver settings -->
+  <property name="local.repo.dir"
+    value="${my.ivy.dir}/local-repository" override="false" />
+
+  <resolvers>
+  
+    <url name="publish_artifactory"  m2compatible="false">
+          <ivy pattern="${artifactory.host.url}/artifactory/libs-releases-local${ivy.pattern}" />
+          <!--<artifact pattern="${artifactory.host.url}/artifactory/libs-releases-local/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>-->
+          <artifact pattern="${artifactory.host.url}/artifactory/libs-releases-local/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]" /> 
+    </url>
+    <url name="publish_lm_artifactory"  m2compatible="false">
+              <ivy pattern="${lm.artifactory.host.url}/artifactory/libs-releases-local${ivy.pattern}" />
+              <!--<artifact pattern="${artifactory.host.url}/artifactory/libs-releases-local/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>-->
+              <artifact pattern="${lm.artifactory.host.url}/artifactory/libs-releases-local/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]" /> 
+    </url>
+ 
+    <ibiblio name="artifactory"
+      root="${artifactory.host.url}/artifactory/libs-releases"
+      m2compatible="true" usepoms="false" />
+      
+      <!--
+       <ibiblio name="artifactory-local"
+            root="${artifactory.host.url}/artifactory/libs-releases-local"
+            m2compatible="false" usepoms="false" />
+-->
+ 
+    <url name="local-artifactory" m2compatible="false" >
+    	<ivy pattern="${artifactory.host.url}/artifactory/libs-releases-local${ivy.pattern}" />
+  	<artifact pattern="${artifactory.host.url}/artifactory/libs-releases/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+    </url>
+  
+   
+    <chain name="local" returnFirst="true">
+    <filesystem name="local-repo">
+            <ivy pattern="${local.repo.dir}/${ivy.pattern}" />
+            <artifact
+              pattern="${local.repo.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]" />
+     </filesystem>
+     	<resolver ref="local-artifactory" />
+    </chain>
+
+    <chain name="enterprise" returnFirst="true" >
+	<resolver ref="local" />
+	<resolver ref="artifactory" />
+	<!--
+     <sftp name="shared" host="${shared.repo.host}" user="ivyuser" keyFile="${user.home}/.ssh/ivyuser_id_rsa" >
+        <ivy pattern="${shared.repo.root}/${ivy.pattern}" />
+        <artifact
+          pattern="${shared.repo.root}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]" />
+      </sftp>
+      -->
+      
+    </chain>
+
+
+  </resolvers>
+</ivysettings>
+
+
+

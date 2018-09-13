@@ -1,0 +1,146 @@
+<wsdl:definitions name="OrderComplaint"
+	targetNamespace="http://fas.gsa.gov/services/OrderComplaint/v1.0"
+	xmlns:tns="http://fas.gsa.gov/services/OrderComplaint/v1.0"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"  
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:cmplnt="http://fas.gsa.gov/OrderComplaint/v1.0"
+  xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+	
+	<!--  WSDL Types declarations -->	
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://fas.gsa.gov/services/OrderComplaint/v1.0"
+    						xmlns:tns="http://fas.gsa.gov/services/OrderComplaint/v1.0"
+    						xmlns:cmplnt="http://fas.gsa.gov/OrderComplaint/v1.0"
+    						xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+    						xmlns:glb="http://fas.gsa.gov/Global/v1.0" 
+    						xmlns:flt="http://fas.gsa.gov/Faults/v1.0"
+    						xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<xsd:import namespace="http://fas.gsa.gov/OrderComplaint/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/Global/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/services/Messages/v1.0" />
+    	<xsd:import namespace="http://fas.gsa.gov/Faults/v1.0" />
+    	
+    	<xsd:element name="createComplaintRequest" type="cmplnt:Complaint"/>
+    	<xsd:element name="complaintKeyCreate" type="glb:positiveIntRequired10"/>
+    	<xsd:element name="complaintKeyCancel" type="glb:positiveIntRequired10"/>
+    	<xsd:element name="complaintKeyInvestigate" type="glb:positiveIntRequired10"/>
+    	<xsd:element name="modifyComplaintRequest" type="msg:ModifyComplaint"/>
+    	<xsd:element name="modifyComplaintResponse" type="xsd:boolean"/> 
+    	<xsd:element name="cancelComplaintResponse" type="xsd:boolean"/>
+    	<xsd:element name="getInvestigationResponse" type="cmplnt:InvestigationDetails"/>   
+    	<!--  Service fault element -->
+			<xsd:element name="serviceFault"	nillable="true" type="flt:ServiceFault" />
+		</xsd:schema>
+  </wsdl:types>
+  <!-- WSDL Message declarations -->
+  <wsdl:message name="CreateComplaintRequest">
+    <wsdl:part element="tns:createComplaintRequest" name="createComplaintRequest"/>
+  </wsdl:message>
+  <wsdl:message name="CreateComplaintResponse">
+    <wsdl:part element="tns:complaintKeyCreate" name="complaintKey"/>
+  </wsdl:message>
+  <wsdl:message name="ModifyComplaintRequest">
+    <wsdl:part element="tns:modifyComplaintRequest" name="modifyComplaintRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ModifyComplaintResponse">
+    <wsdl:part element="tns:modifyComplaintResponse" name="modifyComplaintResponse"/>
+  </wsdl:message>
+  <wsdl:message name="CancelComplaintRequest">
+    <wsdl:part element="tns:complaintKeyCancel" name="complaintKey"/>
+  </wsdl:message>
+  <wsdl:message name="CancelComplaintResponse">
+    <wsdl:part element="tns:cancelComplaintResponse" name="cancelComplaintResponse"/>
+  </wsdl:message>  
+  <wsdl:message name="GetInvestigationRequest">
+    <wsdl:part element="tns:complaintKeyInvestigate" name="complaintKey"/>
+  </wsdl:message>
+  <wsdl:message name="GetInvestigationResponse">
+    <wsdl:part element="tns:getInvestigationResponse" name="getInvestigationResponse"/>
+  </wsdl:message>  
+  <wsdl:message name="ServiceFault">
+  	<wsdl:part element="tns:serviceFault" name="serviceFault" />
+  </wsdl:message> 
+    
+   <!--  WSDL Port Operations --> 
+  <wsdl:portType name="OrderComplaint">
+    <wsdl:operation name="createComplaint">
+      <wsdl:input message="tns:CreateComplaintRequest"/>
+      <wsdl:output message="tns:CreateComplaintResponse"/>
+			<wsdl:fault message="tns:ServiceFault"  name="createComplaintFault" />      
+    </wsdl:operation>
+    <wsdl:operation name="modifyComplaint">
+      <wsdl:input message="tns:ModifyComplaintRequest"/>
+      <wsdl:output message="tns:ModifyComplaintResponse"/>
+			<wsdl:fault message="tns:ServiceFault"  name="modifyComplaintFault" />      
+    </wsdl:operation>
+    <wsdl:operation name="cancelComplaint">
+      <wsdl:input message="tns:CancelComplaintRequest"/>
+      <wsdl:output message="tns:CancelComplaintResponse"/>
+			<wsdl:fault message="tns:ServiceFault"  name="cancelComplaintFault" />      
+    </wsdl:operation>
+    <wsdl:operation name="getInvestigation">
+      <wsdl:input message="tns:GetInvestigationRequest"/>
+      <wsdl:output message="tns:GetInvestigationResponse"/>
+			<wsdl:fault message="tns:ServiceFault"  name="getInvestigationFault" />      
+    </wsdl:operation>                
+  </wsdl:portType>
+  
+  <!--  WSDL Binding -->
+  <wsdl:binding name="OrderComplaintBinding" type="tns:OrderComplaint">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="createComplaint">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="createComplaintFault">
+  			<soap:fault use="literal" name="createComplaintFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>
+    <wsdl:operation name="modifyComplaint">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="modifyComplaintFault">
+  			<soap:fault use="literal" name="modifyComplaintFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>
+    <wsdl:operation name="cancelComplaint">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="cancelComplaintFault">
+  			<soap:fault use="literal" name="cancelComplaintFault" />
+  		</wsdl:fault>      
+    </wsdl:operation> 
+    <wsdl:operation name="getInvestigation">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="getInvestigationFault">
+  			<soap:fault use="literal" name="getInvestigationFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>             
+  </wsdl:binding>
+  
+  <!--  WSDL Service -->
+  <wsdl:service name="OrderComplaint">
+    <wsdl:port binding="tns:OrderComplaintBinding" name="OrderComplaintBinding">
+      <soap:address location="http://localhost:8080/order.serivces/OrderComplaint"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

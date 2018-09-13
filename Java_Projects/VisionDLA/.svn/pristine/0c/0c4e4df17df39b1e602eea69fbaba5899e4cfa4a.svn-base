@@ -1,0 +1,9 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+	<public publicId="http://fas.gsa.gov/Global/v1.0"
+		uri="resources/schema/Global.xsd" />
+	<public publicId="http://fas.gsa.gov/DiscrepancyOutcome/v1.0"
+		uri="resources/schema/DiscrepancyOutcome.xsd" />
+	<public publicId="http://fas.gsa.gov/Faults/v1.0"
+		uri="resources/schema/Faults.xsd" />									
+</catalog>
+

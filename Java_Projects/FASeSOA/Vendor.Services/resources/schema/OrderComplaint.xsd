@@ -1,0 +1,77 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/OrderComplaint/v1.0" 
+	xmlns:cmplnt="http://fas.gsa.gov/OrderComplaint/v1.0"
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+
+	<import  namespace="http://fas.gsa.gov/Global/v1.0" 
+				schemaLocation="Global.xsd"/>
+				
+	<complexType name="Complaint">
+		<sequence>
+			<element name="item" type="cmplnt:Item"/>
+			<element name="complaintDate" type="date"/>
+			<element name="receivedDate" type="date"/>
+			<element name="originator" type="cmplnt:Originator"/>
+			<element name="poc" type="cmplnt:PointOfContact"/>
+			<element name="requisitionNumber" type="string"/>
+			<element name="notificationType" type="glb:string1"/>
+			<element name="notificationDescription" type="string"/>
+			<element name="purchaseOrderNumber" type="string"/>
+			<element name="contractNumber" type="string"/>
+			<element name="quantityReceived" type="string"/>
+			<element name="quantityRejected" type="string"/>
+			<element name="natureOfComplaint" type="string"/>
+			<element name="operationCenter" type="glb:string1"/>
+			<element name="ncscContact" type="cmplnt:NCSCContact"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Item">
+		<sequence>
+			<element name="nsn" type="glb:string15" />
+			<element name="name" type="glb:string35"/>
+			<element name="category" type="glb:string1"/>
+		</sequence>		
+	</complexType>
+	
+	<complexType name="Originator">
+		<sequence>
+			<element name="name" type="glb:string80"/>
+			<element name="address1" type="glb:string40"/>
+			<element name="address2" type="glb:string40"/>
+			<element name="city" type="glb:string40"/>
+			<element name="state" type="glb:string2"/>
+			<element name="zip" type="glb:string10"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="NCSCContact">
+		<sequence>
+			<element name="firstName" type="glb:string20"/>
+			<element name="lastName" type="glb:string20"/>
+			<element name="email" type="glb:string80"/>
+			<element name="phone" type="glb:string20"/>
+			<element name="phoneExtension" type="glb:string10"/>
+		</sequence>
+	</complexType>	
+	
+	<complexType name="PointOfContact">
+		<sequence>
+			<element name="name" type="glb:string80"/>
+			<element name="phone" type="glb:string25"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="InvestigationDetails">
+		<sequence>
+			<element name="controlNumber" type="string"/>
+			<element name="status" type="string"/>
+			<element name="assignedTo" type="string"/>
+			<element name="phone" type="string"/>
+			<element name="fax" type="string"/>
+			<element name="email" type="string"/>
+			<element name="operationCenter" type="string"/>
+			<element name="lastModified" type="date"/>
+		</sequence>
+	</complexType>
+</schema>

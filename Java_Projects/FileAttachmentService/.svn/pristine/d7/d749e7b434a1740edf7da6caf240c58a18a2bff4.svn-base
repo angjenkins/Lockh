@@ -1,0 +1,2 @@
+##service property location
+attachment.property.file = /opt/sw/jboss/enterprise/conf/attachment.properties

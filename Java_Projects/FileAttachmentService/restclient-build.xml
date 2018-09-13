@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project basedir="." default="build" name="attachment.restclient">
+
+	<property file="build.local.properties" />
+
+	<property name="build.home" value="build-restclient" />
+	<property name="src.dir" value="${basedir}/src/restclient" />
+	<property name="resource.dir" value="${basedir}/webapp-restclient" />
+	<property name="build.classes.home" value="${build.home}/classes" />
+	<property name="lib.dir" value="lib-restclient" />
+
+
+	<property name="web.xml.home" value="${basedir}/src/restclient" />
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="*.jar" />
+		<pathelement path="${build.home}/classes" />
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build.classes.home}" />
+	</target>
+
+	<target name="compile-generated" depends="init">
+		<delete dir="${build.classes.home}" includeEmptyDirs="true">
+			<include name="**/*" />
+		</delete>
+	</target>
+
+
+	<target name="build-classes" depends="compile-generated">
+		<javac destdir="${build.classes.home}" debug="on" srcdir="${src.dir}" includes="**/*">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="build" depends="build-classes">
+		<delete file="${build.home}/${ant.project.name}.war" />
+		<war destfile="${build.home}/${ant.project.name}.war" webxml="${web.xml.home}/web.xml">
+
+			<fileset dir="WebContent" />
+			<lib dir="${lib.dir}" />
+			<classes dir="${build.classes.home}" />
+			<fileset dir="${resource.dir}">
+				<include name="**/*" />
+			</fileset>
+			
+		</war>
+	</target>
+	<!--
+	<target name="deploy" depends="package">
+		<copy todir="${jboss.app.deployment.home}/deploy">
+			<fileset dir="${build.home}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+	</target>
+	-->
+	<target name="deploy.lib">
+		<copy todir="${jboss.app.deployment.home}/lib">
+			<fileset dir="${lib.dir}" includes="opena.jar, jconn3.jar" />
+		</copy>
+	</target>
+
+
+
+	<target name="clean">
+		<delete dir="${build.home}" includeEmptyDirs="true" includes="**/*" />
+		<delete dir="${resource.dir}/schema" includeEmptyDirs="true" includes="**/*" />
+		<delete dir="${build.src.generated}" includeEmptyDirs="true" includes="**/*" />
+	</target>
+
+</project>

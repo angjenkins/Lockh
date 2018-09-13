@@ -1,0 +1,19 @@
+## SFTP Host, user id, password, working directory
+gsa.sftp.host=eagu14.fss.gsa.gov
+gsa.sftp.port=22
+gsa.sftp.user=p3xferp
+gsa.sftp.password=xN9cut$!
+gsa.sftp.request.attachment.dir=/FSSI/P3/esoa/ingest/prod
+
+
+## Application staging directories
+
+request.att.staging.dir=C:/VisionDla/XML/Request/Attachments
+
+
+##
+gsa.hashpass=NFWn0peuwYvVje4VMgUiiTbMSeM=
+gsa.salt=esoa
+password=92mnGg1Cb14D9hVhG1W5fZra4UI=
+
+

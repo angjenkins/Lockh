@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project basedir="." default="build" name="attachment.services">
+
+	<property file="build.local.properties" />
+
+	<property name="build.home" value="build" />
+	<property name="src.dir" value="${basedir}/src/impl" />
+	<property name="resource.dir" value="${basedir}/resources" />
+	<property name="build.src.generated" value="${basedir}/src/generated" />
+	<property name="build.classes.home" value="${build.home}/classes" />
+	<property name="lib.dir" value="lib" />
+
+	<property name="enterprise.build.dir" value="${basedir}/../Enterprise.Build" />
+	<property name="enterprise.lib.dir" value="${basedir}/../lib" />
+	<property name="enterprise.schemas.dir" value="${basedir}/../Domain.Models/schema" />
+
+	<path id="classpath">
+		<fileset dir="lib" includes="*.jar" />
+		<pathelement path="${build.home}/classes" />
+	</path>
+
+	<taskdef name="wsconsume" classname="org.jboss.wsf.spi.tools.ant.WSConsumeTask">
+		<classpath refid="classpath" />
+	</taskdef>
+
+
+	<target name="wsdl2java">
+		<wsconsume catalog="catalog.xml" verbose="true" sourcedestdir="${build.src.generated}/" keep="true" destdir="${build.classes.home}" wsdl="${basedir}/${wsdl.file}" extension="true">
+		</wsconsume>
+	</target>
+
+
+
+	<target name="init">
+		<mkdir dir="${build.classes.home}" />
+	</target>
+
+
+	<target name="generate" depends="init">
+		<antcall target="wsdl2java">
+			<param name="wsdl.file" value="wsdl/Attachment.wsdl" />
+		</antcall>
+	</target>
+
+	<target name="compile-generated" depends="generate">
+		<delete dir="${build.classes.home}" includeEmptyDirs="true">
+			<include name="**/*" />
+		</delete>
+		<javac destdir="${build.classes.home}" debug="on" srcdir="${build.src.generated}" includes="**/*">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="build-classes" depends="compile-generated">
+		<javac destdir="${build.classes.home}" debug="on" srcdir="${src.dir}" includes="**/*">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="build"  depends="build-classes">
+		<delete file="${build.home}/${ant.project.name}.jar" />
+		<jar jarfile="${build.home}/${ant.project.name}.jar">
+			<!--<metainf dir="resources/ejb/META-INF"/>-->
+			<!--<zipgroupfileset dir="${lib.dir}" includes="**/*.jar"/>-->
+			<!--<zipfileset dir="${lib.dir}" includes="commons-codec-1.8.jar" prefix="lib" />-->
+			<zipfileset dir="${lib.dir}" includes="commons-codec-1.8.jar" />
+			<zipfileset dir="${lib.dir}" includes="jsch-0.1.50.jar" />
+
+			<fileset dir="${build.classes.home}">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="${resource.dir}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+	<!--
+	<target name="deploy" depends="package">
+		<copy todir="${jboss.app.deployment.home}/deploy">
+			<fileset dir="${build.home}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+	</target>
+	-->
+	<target name="deploy.lib">
+		<copy todir="${jboss.app.deployment.home}/lib">
+			<fileset dir="${lib.dir}" includes="opena.jar, jconn3.jar" />
+		</copy>
+	</target>
+
+
+
+	<target name="clean">
+		<delete dir="${build.home}" includeEmptyDirs="true" includes="**/*" />
+		<delete dir="${resource.dir}/schema" includeEmptyDirs="true" includes="**/*" />
+		<delete dir="${build.src.generated}" includeEmptyDirs="true" includes="**/*" />
+	</target>
+
+</project>

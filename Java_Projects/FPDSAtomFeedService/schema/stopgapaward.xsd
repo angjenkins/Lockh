@@ -1,0 +1,1196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- edited with XMLSpy v2011 rel. 3 (http://www.altova.com) by Ernie Dakin (GSA) -->
+<xs:schema xmlns:ns1="http://www.fpdsng.com/FPDS" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.fpdsng.com/FPDS" elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    <xs:element name="listOfAwards" type="ns1:ListOfAwards" />
+        <xs:complexType name="ListOfAwards">
+            <xs:sequence>
+                <xs:element name="count">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="total" type="xs:unsignedShort"/>
+                            <xs:element name="fetched" type="xs:unsignedShort"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="award"  maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="awardID">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="awardContractID">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="agencyID">
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="PIID" type="xs:string"/>
+                                                  <xs:element name="modNumber" type="xs:string"/>
+                                                  <xs:element name="transactionNumber"
+                                                  type="xs:string"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="referencedIDVID" >
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="agencyID">
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="PIID" type="xs:string"/>
+                                                  <xs:element name="modNumber" type="xs:string"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="relevantContractDates">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="signedDate" type="xs:string"/>
+                                        <xs:element name="effectiveDate" type="xs:string"/>
+                                        <xs:element name="currentCompletionDate" type="xs:string"/>
+                                        <xs:element name="ultimateCompletionDate" type="xs:string"
+                                            />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="dollarValues">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="obligatedAmount" type="xs:decimal"/>
+                                        <xs:element name="baseAndExercisedOptionsValue"
+                                            type="xs:decimal"/>
+                                        <xs:element name="baseAndAllOptionsValue" type="xs:decimal"
+                                        />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="totalDollarValues">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="totalObligatedAmount" type="xs:decimal"/>
+                                        <xs:element name="totalBaseAndExercisedOptionsValue"
+                                            type="xs:decimal"/>
+                                        <xs:element name="totalBaseAndAllOptionsValue"
+                                            type="xs:decimal"/>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="purchaserInformation">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="contractingOfficeAgencyID">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="contractingOfficeID">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  <xs:attribute name="regionCode" type="xs:string"
+                                                  use="optional"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="foreignFunding">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="fundingRequestingAgencyID" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="fundingRequestingOfficeID" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="contractMarketingData">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="feePaidForUseOfService"
+                                            type="xs:decimal"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="contractData">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="multiYearContract">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="optional"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+
+                                        <xs:element name="contractActionType">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="typeOfContractPricing">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="majorProgramCode" type="xs:string"/>
+                                        <xs:element name="reasonForModification">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="nationalInterestActionCode">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="costOrPricingData">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="costAccountingStandardsClause">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="inherentlyGovernmentalFunction">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="GFE-GFP">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="seaTransportation">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="undefinitizedAction">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="consolidatedContract">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="performanceBasedServiceContract">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element
+                                            name="contingencyHumanitarianPeacekeepingOperation">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="contractFinancing">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="purchaseCardAsPaymentMethod">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="numberOfActions" type="xs:unsignedByte"/>
+                                        <xs:element name="solicitationID" type="xs:string"/>
+                                        <xs:element name="descriptionOfContractRequirement"
+                                            type="xs:string"/>
+                                        <xs:element name="listOfTreasuryAccounts">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                  <xs:element name="treasuryAccount">
+                                                  <xs:complexType>
+                                                  <xs:all>
+                                                  <xs:element name="treasuryAccountSymbol">
+                                                  <xs:complexType>
+                                                  <xs:all>
+                                                  <xs:element name="agencyIdentifier"
+                                                  type="xs:string" />
+                                                  <xs:element name="mainAccountCode"
+                                                  type="xs:string" />
+                                                  <xs:element
+                                                  name="allocationTransferAgencyIdentifier"
+                                                  type="xs:string" />
+                                                  <xs:element name="beginningPeriodOfAvailability"
+                                                  type="xs:string" />
+                                                  <xs:element name="endingPeriodOfAvailability"
+                                                  type="xs:string" />
+                                                  <xs:element name="availabilityTypeCode"
+                                                  type="xs:string" />
+                                                  <xs:element name="subAccountCode" type="xs:string"
+                                                  />
+                                                  <xs:element name="subLevelPrefixCode"
+                                                  type="xs:string" />
+                                                  </xs:all>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="initiative" type="xs:string"
+                                                  />
+                                                  <xs:element name="obligatedAmount"
+                                                  type="xs:string" />
+                                                  </xs:all>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="legislativeMandates">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="ClingerCohenAct">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="WalshHealyAct">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="serviceContractAct">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="DavisBaconAct">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="interagencyContractingAuthority">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                             <xs:element name="otherStatutoryAuthority">
+                                                <xs:complexType>
+                                                    <xs:simpleContent>
+                                                        <xs:extension base="xs:string">
+                                                            <xs:attribute name="description" type="xs:string"
+                                                                use="required"/>
+                                                        </xs:extension>
+                                                    </xs:simpleContent>
+                                                </xs:complexType>
+                                            </xs:element>
+                                         
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="productOrServiceInformation">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="productOrServiceCode" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="contractBundling" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="claimantProgramCode" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="principalNAICSCode" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="manufacturingOrganizationType"
+                                            >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="recoveredMaterialClauses" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="systemEquipmentCode" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element
+                                            name="informationTechnologyCommercialItemCategory"
+                                            >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="useOfEPADesignatedProducts" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="countryOfOrigin" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="placeOfManufacture" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="vendor">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="vendorHeader">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="vendorName" type="xs:string"/>
+                                                  <xs:element name="vendorAlternateName"
+                                                  type="xs:string" />
+                                                  <xs:element name="vendorLegalOrganizationName"
+                                                  type="xs:string" />
+                                                  <xs:element name="vendorDoingAsBusinessName"
+                                                  type="xs:string" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="vendorSiteDetails">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="vendorSocioEconomicIndicators">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element
+                                                  name="isEconomicallyDisadvantagedWomenOwnedSmallBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isJointVentureEconomicallyDisadvantagedWomenOwnedSmallBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isJointVentureWomenOwnedSmallBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isWomenOwnedSmallBusiness"
+                                                  type="xs:boolean"/>                        
+                                                  <xs:element
+                                                  name="isAlaskanNativeOwnedCorporationOrFirm"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isAmericanIndianOwned"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isIndianTribe" type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isNativeHawaiianOwnedOrganizationOrFirm"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isTriballyOwnedFirm"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isVeteranOwned"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isServiceRelatedDisabledVeteranOwnedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isWomenOwned" type="xs:boolean"/>
+                                                  <xs:element name="minorityOwned">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="isMinorityOwned"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isSubContinentAsianAmericanOwnedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isAsianPacificAmericanOwnedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isBlackAmericanOwnedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isHispanicAmericanOwnedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isNativeAmericanOwnedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isOtherMinorityOwned"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="isVerySmallBusiness"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="vendorBusinessTypes">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element
+                                                  name="isCommunityDevelopedCorporationOwnedFirm"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isLaborSurplusAreaFirm"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="federalGovernment">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="isFederalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isFederallyFundedResearchAndDevelopmentCorp"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isFederalGovernmentAgency"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="isStateGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="localGovernment">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="isLocalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isCityLocalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isCountyLocalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isInterMunicipalLocalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isLocalGovernmentOwned"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isMunicipalityLocalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isSchoolDistrictLocalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isTownshipLocalGovernment"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="isTribalGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isForeignGovernment"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="businessOrOrganizationType">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="isCorporateEntityNotTaxExempt"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isCorporateEntityTaxExempt"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isPartnershipOrLimitedLiabilityPartnership"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isSolePropreitorship"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isSmallAgriculturalCooperative"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isInternationalOrganization"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isUSGovernmentEntity"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="vendorLineOfBusiness">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element
+                                                  name="isCommunityDevelopmentCorporation"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isDomesticShelter"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isEducationalInstitution"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isFoundation" type="xs:boolean"/>
+                                                  <xs:element name="isHospital" type="xs:boolean"/>
+                                                  <xs:element name="isManufacturerOfGoods"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isVeterinaryHospital"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isHispanicServicingInstitution"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element
+                                                  name="vendorRelationshipWithFederalGovernment">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="receivesContracts"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="receivesGrants"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="receivesContractsAndGrants"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="typeOfGovernmentEntity">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="isAirportAuthority"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isCouncilOfGovernments"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isHousingAuthoritiesPublicOrTribal"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isInterstateEntity"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isPlanningCommission"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isPortAuthority"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isTransitAuthority"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="vendorOrganizationFactors">
+                                                  <xs:complexType>
+                                                  <xs:all>
+                                                  <xs:element name="isSubchapterSCorporation"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isLimitedLiabilityCorporation"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isForeignOwnedAndLocated"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="profitStructure">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="isForProfitOrganization"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isNonprofitOrganization"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isOtherNotForProfitOrganization"
+                                                  type="xs:boolean"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="isShelteredWorkshop"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="stateOfIncorporation"
+                                                  type="xs:string"/>
+                                                  <xs:element name="countryOfIncorporation"
+                                                  type="xs:string"/>
+                                                  <xs:element name="organizationalType"
+                                                  type="xs:string"/>
+                                                  <xs:element name="numberOfEmployees"
+                                                  type="xs:string"/>
+                                                  <xs:element name="annualRevenue" type="xs:string"
+                                                  />
+                                                  </xs:all>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="typeOfEducationalEntity">
+                                                  <xs:complexType>
+                                                  <xs:all>
+                                                  <xs:element name="is1862LandGrantCollege"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="is1890LandGrantCollege"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="is1994LandGrantCollege"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isHistoricallyBlackCollegeOrUniversity"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isMinorityInstitution"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isPrivateUniversityOrCollege"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isSchoolOfForestry"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isStateControlledInstitutionofHigherLearning"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isTribalCollege"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isVeterinaryCollege"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isAlaskanNativeServicingInstitution"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isNativeHawaiianServicingInstitution"
+                                                  type="xs:boolean"/>
+                                                  </xs:all>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="vendorCertifications">
+                                                  <xs:complexType>
+                                                  <xs:all>
+                                                  <xs:element
+                                                  name="isDOTCertifiedDisadvantagedBusinessEnterprise"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isSelfCertifiedSmallDisadvantagedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isSBACertifiedSmallDisadvantagedBusiness"
+                                                  type="xs:boolean"/>
+                                                  <xs:element
+                                                  name="isSBACertified8AProgramParticipant"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isSBACertifiedHUBZone"
+                                                  type="xs:boolean"/>
+                                                  <xs:element name="isSBACertified8AJointVenture"
+                                                  type="xs:boolean"/>
+                                                  </xs:all>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="vendorLocation">
+                                                  <xs:complexType>
+                                                  <xs:all>
+                                                  <xs:element name="streetAddress" type="xs:string"/>
+                                                  <xs:element name="streetAddress2" type="xs:string"
+                                                  />
+                                                  <xs:element name="streetAddress3" type="xs:string"
+                                                  />
+                                                  <xs:element name="city" type="xs:string"/>
+                                                  <xs:element name="state">
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="optional"/>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="ZIPCode" type="xs:string"
+                                                  />
+                                                  <xs:element name="countryCode" >
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="optional"/>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="phoneNo" type="xs:string"/>
+                                                  <xs:element name="faxNo" type="xs:string"/>
+                                                  <xs:element name="congressionalDistrictCode"
+                                                  type="xs:string" />
+
+                                                  </xs:all>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="vendorSiteCode" type="xs:string"
+                                                  />
+                                                  <xs:element name="vendorAlternateSiteCode"
+                                                  type="xs:string" />
+                                                  <xs:element name="vendorDUNSInformation">
+                                                  <xs:complexType>
+                                                  <xs:sequence>
+                                                  <xs:element name="DUNSNumber" type="xs:string"/>
+                                                  <xs:element name="vendorName" type="xs:string"/>
+												  <xs:element name="parentDUNSNumber" type="xs:string"/>
+												  <xs:element name="domesticParentDUNSNumber" type="xs:string"/>
+												  <xs:element name="globalParentDUNSNumber" type="xs:string"/>
+												  <xs:element name="parentDUNSName" type="xs:string"/>
+												  <xs:element name="domesticParentDUNSName" type="xs:string"/>
+												  <xs:element name="globalParentDUNSName" type="xs:string"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="divisionName" type="xs:string"/>
+                                                  <xs:element name="divisionNumberOrOfficeCode"
+                                                  type="xs:string" />
+                                                  <xs:element name="ccrRegistrationDetails">
+                                                  <xs:complexType>
+                                                  <xs:sequence >
+                                                  <xs:element name="registrationDate"
+                                                  type="xs:string"/>
+                                                  <xs:element name="renewalDate" type="xs:string"/>
+                                                  </xs:sequence>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="CCRException" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:unsignedByte">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element
+                                            name="contractingOfficerBusinessSizeDetermination"
+                                            >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="placeOfPerformance">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="principalPlaceOfPerformance">
+                                            <xs:complexType>
+                                                <xs:sequence >
+                                                  <xs:element name="locationCode">
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="optional"/>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="stateCode">
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="optional"/>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                  <xs:element name="countryCode">
+                                                  <xs:complexType>
+                                                  <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="name" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                  </xs:simpleContent>
+                                                  </xs:complexType>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="placeOfPerformanceZIPCode" >
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="county" type="xs:string"
+                                                  use="optional"/>
+                                                  <xs:attribute name="city" type="xs:string"
+                                                  use="optional"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="placeOfPerformanceCongressionalDistrict"
+                                            type="xs:unsignedByte" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="competition">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="solicitationProcedures">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="typeOfSetAside">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="evaluatedPreference">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="research">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="extentCompeted">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="statutoryExceptionToFairOpportunity">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="numberOfOffersReceived"
+                                            type="xs:unsignedByte"/>
+                                        <xs:element name="commercialItemAcquisitionProcedures">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="commercialItemTestProgram">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element
+                                            name="smallBusinessCompetitivenessDemonstrationProgram"
+                                            type="xs:boolean"/>
+                                        <xs:element name="A76Action">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="fedBizOpps">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="localAreaSetAside">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="priceEvaluationPercentDifference"
+                                            type="xs:decimal"/>
+                                        <xs:element name="synopsisWaiverException">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="reasonNotCompeted">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="preferencePrograms">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="subcontractPlan">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="transactionInformation">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="createdBy" type="xs:string"/>
+                                        <xs:element name="createdDate" type="xs:string"/>
+                                        <xs:element name="lastModifiedBy" type="xs:string"/>
+                                        <xs:element name="lastModifiedDate" type="xs:string"/>
+                                        <xs:element name="status">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:string">
+                                                  <xs:attribute name="description" type="xs:string"
+                                                  use="required"/>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+</xs:schema>

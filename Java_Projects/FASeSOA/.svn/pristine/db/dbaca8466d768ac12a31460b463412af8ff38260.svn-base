@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://fas.gsa.gov/DiscrepancyOutcome/v1.0"
+	xmlns:do="http://fas.gsa.gov/DiscrepancyOutcome/v1.0"
+	xmlns:glb="http://fas.gsa.gov/Global/v1.0">
+	
+	<import  namespace="http://fas.gsa.gov/Global/v1.0" schemaLocation="Global.xsd"/>
+	
+	<complexType name="AdjustedQuantity">
+		<sequence>
+			<element name="quantity" type="string"/>
+			<element name="unitCode" type="glb:string2"/>
+			<element name="unitPrice" type="string"/>	
+		</sequence>
+	</complexType>
+	
+ 	<simpleType name="documentType">
+    <restriction base="string">
+      <enumeration value="PDF"/>
+      <enumeration value="WORD"/>
+      <enumeration value="IMAGE"/>
+      <enumeration value="TEXT"/>
+      <enumeration value="OTHER"/>
+    </restriction>
+  </simpleType>
+  
+	<complexType name="Attachment">
+		<sequence>
+			<element name="title" type="string" minOccurs="0"/>
+			<element name="documentName" type="string"/>
+			<element name="documentType" type="do:documentType" minOccurs="0"/>
+			<element name="document" type="base64Binary"/>
+			<element name="description" type="string" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="AttachmentList">
+		<sequence>
+			<element name="attachment" type="do:Attachment" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="OrderDiscrepancyOutcome">
+		<sequence>
+			<element name="visionDlaKey" type="long"/>
+			<element name="webSDRNumber" type="string"/>
+			<element name="transactionSetPurposeCode" type="string" minOccurs="0"/>
+			<element name="adjustedQuantity" type="do:AdjustedQuantity" minOccurs="0"/>
+			<element name="discrepancyCode" type="string" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="dispositionCode" type="string" minOccurs="0" maxOccurs="unbounded"/>
+			<element name="actionCode" type="string" minOccurs="0"/>
+			<element name="comments" type="string"/>
+			<element name="attachmentCount" type="int"/>
+			<element name="status" type="string"/>
+			<element name="attachmentName" type="string" minOccurs="0"  maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="processResponse">
+		<sequence>
+			<element name="successful" type="boolean"/>
+			<element name="visionDlaKey" type="long" minOccurs="0"/>
+			<element name="webSDRNumber" type="string" minOccurs="0"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="processAttachmentRequest">
+		<sequence>
+			<element name="visionDlaKey" type="long"/>
+			<element name="webSDRNumber" type="string"/>
+			<element name="attachment" type="do:Attachment"/>
+		</sequence>
+	</complexType>	
+</schema>

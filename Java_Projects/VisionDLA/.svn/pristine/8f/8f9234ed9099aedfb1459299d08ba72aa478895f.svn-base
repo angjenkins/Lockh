@@ -1,0 +1,93 @@
+<wsdl:definitions name="OrderDiscrepanyOutcome"
+	targetNamespace="http://fas.gsa.gov/services/DiscrepancyOutcome/v1.0"
+	xmlns:tns="http://fas.gsa.gov/services/DiscrepancyOutcome/v1.0"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"  
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:do="http://fas.gsa.gov/DiscrepancyOutcome/v1.0"
+	xmlns:flt="http://fas.gsa.gov/Faults/v1.0">
+  
+  	<!--  WSDL Types declarations -->	
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://fas.gsa.gov/services/DiscrepancyOutcome/v1.0"
+    						xmlns:tns="http://fas.gsa.gov/services/DiscrepancyOutcome/v1.0"
+    						xmlns:do="http://fas.gsa.gov/DiscrepancyOutcome/v1.0"
+    						xmlns:flt="http://fas.gsa.gov/Faults/v1.0"  
+    						xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+			<xsd:import namespace="http://fas.gsa.gov/DiscrepancyOutcome/v1.0" />
+			<xsd:import namespace="http://fas.gsa.gov/Faults/v1.0" />
+			
+    	<xsd:element name="discrepancyOutcome" type="do:OrderDiscrepancyOutcome"/>
+    	<xsd:element name="outcomeResponse" type="do:processResponse"/>
+    	<xsd:element name="processAttRequest" type="do:processAttachmentRequest"/>
+    	<xsd:element name="processAttResponse" type="do:processResponse"/>
+    	<xsd:element name="serviceFault"	nillable="true" type="flt:ServiceFault" />
+    </xsd:schema>
+  </wsdl:types>
+  
+  <!-- WSDL Message declarations -->
+  <wsdl:message name="ProcessOutcomeRequest">
+    <wsdl:part element="tns:discrepancyOutcome" name="discrepancyOutcome"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessOutcomeResponse">
+    <wsdl:part element="tns:outcomeResponse" name="outcomeResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessAttRequest">
+    <wsdl:part element="tns:processAttRequest" name="processAttRequest"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessAttResponse">
+    <wsdl:part element="tns:processAttResponse" name="processAttResponse"/>
+  </wsdl:message>
+	<wsdl:message name="ServiceFault">
+  	<wsdl:part element="tns:serviceFault" name="serviceFault" />
+  </wsdl:message>    
+  
+  <!--  WSDL Port Operations --> 
+  <wsdl:portType name="OrderDiscrepancyOutcome">
+    <wsdl:operation name="processDiscrepancyOutcome">
+      <wsdl:input message="tns:ProcessOutcomeRequest"/>
+      <wsdl:output message="tns:ProcessOutcomeResponse"/>
+      <wsdl:fault message="tns:ServiceFault"  name="processOutcomeFault" />   
+    </wsdl:operation>
+    <wsdl:operation name="processAttachment">
+      <wsdl:input message="tns:ProcessAttRequest"/>
+      <wsdl:output message="tns:ProcessAttResponse"/>
+      <wsdl:fault message="tns:ServiceFault"  name="processAttFault" />   
+    </wsdl:operation>  
+  </wsdl:portType>
+  
+  <!--  WSDL Binding -->
+  <wsdl:binding name="OrderDiscrepancyOutcomeBinding" type="tns:OrderDiscrepancyOutcome">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="processDiscrepancyOutcome">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="processOutcomeFault">
+  			<soap:fault use="literal" name="processOutcomeFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>
+    <wsdl:operation name="processAttachment">
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+  		<wsdl:fault name="processAttFault">
+  			<soap:fault use="literal" name="processAttFault" />
+  		</wsdl:fault>      
+    </wsdl:operation>   
+  </wsdl:binding>
+  
+  <!--  WSDL Service -->
+  <wsdl:service name="OrderDiscrepancyOutcome">
+    <wsdl:port binding="tns:OrderDiscrepancyOutcomeBinding" name="OrderDiscrepancyOutcomeBinding">
+      <soap:address location="http://localhost:8080/order.serivces/OrderDiscrepancyOutcome"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>  

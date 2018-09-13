@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:msg="http://fas.gsa.gov/services/Messages/v1.0" 
+	xmlns:prc="http://fas.gsa.gov/Pricing/v1.0">
+	
+	<import	namespace="http://fas.gsa.gov/Pricing/v1.0"  schemaLocation="../Pricing.xsd"/>
+	
+	<complexType name="NIINItemPriceRequest">
+		<sequence>
+			<element name="niin7" type="string"/>
+			<element name="store" type="string"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="EDDItemPriceList">
+		<sequence>
+			<element name="eddItemPrice" type="prc:EDDItemPrice" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+</schema>
